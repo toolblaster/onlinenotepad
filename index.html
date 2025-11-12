@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Notepad - Free Text Editor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-file-alt"></i>
+                <h1>Online Notepad</h1>
+            </div>
+            <div class="header-actions">
+                <button id="uploadBtn" class="btn btn-secondary" title="Upload File">
+                    <i class="fas fa-upload"></i> Upload
+                </button>
+                <button id="downloadBtn" class="btn btn-secondary" title="Download File">
+                    <i class="fas fa-download"></i> Download
+                </button>
+                <button id="duplicateBtn" class="btn btn-secondary" title="Duplicate Note">
+                    <i class="fas fa-copy"></i> Duplicate
+                </button>
+                <button id="shareBtn" class="btn btn-secondary" title="Share Note">
+                    <i class="fas fa-share-alt"></i> Share
+                </button>
+            </div>
+        </header>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="toolbar-group">
+                <button id="boldBtn" class="toolbar-btn" title="Bold (Ctrl+B)">
+                    <i class="fas fa-bold"></i>
+                </button>
+                <button id="italicBtn" class="toolbar-btn" title="Italic (Ctrl+I)">
+                    <i class="fas fa-italic"></i>
+                </button>
+                <button id="underlineBtn" class="toolbar-btn" title="Underline (Ctrl+U)">
+                    <i class="fas fa-underline"></i>
+                </button>
+                <button id="strikeBtn" class="toolbar-btn" title="Strikethrough">
+                    <i class="fas fa-strikethrough"></i>
+                </button>
+            </div>
+            
+            <div class="toolbar-group">
+                <button id="ulBtn" class="toolbar-btn" title="Bullet List">
+                    <i class="fas fa-list-ul"></i>
+                </button>
+                <button id="olBtn" class="toolbar-btn" title="Numbered List">
+                    <i class="fas fa-list-ol"></i>
+                </button>
+            </div>
+
+            <div class="toolbar-group">
+                <select id="fontSizeSelect" class="font-size-select">
+                    <option value="12px">12px</option>
+                    <option value="14px">14px</option>
+                    <option value="16px" selected>16px</option>
+                    <option value="18px">18px</option>
+                    <option value="20px">20px</option>
+                    <option value="24px">24px</option>
+                    <option value="28px">28px</option>
+                    <option value="32px">32px</option>
+                </select>
+            </div>
+
+            <div class="toolbar-group ml-auto">
+                <button id="clearBtn" class="toolbar-btn" title="Clear All">
+                    <i class="fas fa-eraser"></i>
+                </button>
+                <button id="fullscreenBtn" class="toolbar-btn" title="Fullscreen">
+                    <i class="fas fa-expand"></i>
+                </button>
+                <button id="darkModeBtn" class="toolbar-btn" title="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Editor Area -->
+        <div class="editor-container">
+            <div id="editor" class="editor" contenteditable="true" spellcheck="true">
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-left">
+                <span id="lastSaved">Auto-saved</span>
+            </div>
+            <div class="status-right">
+                <span id="charCount">0</span> characters | 
+                <span id="wordCount">0</span> words
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="fileInput" accept=".txt,.doc,.docx,.pdf" style="display: none;">
+
+    <!-- Modal for Share -->
+    <div id="shareModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Share Your Note</h2>
+            <p>Copy the link below to share your note:</p>
+            <div class="share-input-group">
+                <input type="text" id="shareLink" readonly>
+                <button id="copyLinkBtn" class="btn btn-primary">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
+            </div>
+            <p class="share-note">Note: The content is saved in your browser's local storage. Share functionality creates a shareable URL with encoded content.</p>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
