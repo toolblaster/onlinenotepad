@@ -3,103 +3,954 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Notepad - Free Text Editor</title>
+    <title>Online Notepad - Rich Text Editor & Note Taker</title>
+    <meta name="description" content="Your free, private online notepad. Write, edit, and format rich text. Auto-saves locally. Features dark mode, file upload/download, and sharing.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --danger-color: #f44336;
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+            --toolbar-bg: #f5f5f5;
+            --editor-bg: #ffffff;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --hover-bg: #e8e8e8;
+            --anchor-ad-height: 50px;
+            --sidebar-width: 260px; /* Widened for note titles */
+        }
+
+        body.dark-mode {
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --border-color: #333333;
+            --toolbar-bg: #2a2a2a;
+            --editor-bg: #1e1e1e;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            --hover-bg: #333333;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+            overflow: hidden; /* Prevent body scroll */
+        }
+
+        /* Page Layout Wrappers */
+        .page-wrapper {
+            display: flex;
+            height: calc(100vh - var(--anchor-ad-height));
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .notes-sidebar {
+            width: var(--sidebar-width);
+            flex-shrink: 0;
+            height: 100%;
+            overflow-y: auto;
+            background-color: var(--toolbar-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .notes-sidebar h3 {
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        #newNoteBtn {
+            width: 100%;
+            margin: 0.5rem 0 1rem 0;
+        }
+
+        .notes-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .note-item {
+            padding: 0.75rem;
+            background: var(--editor-bg);
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .note-item:hover {
+            background: var(--hover-bg);
+        }
+
+        .note-item.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .note-item.active .note-item-delete {
+            color: white;
+        }
+
+        .note-item-title {
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-right: 20px; /* Space for delete button */
+        }
+
+        .note-item-delete {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            font-size: 0.9rem;
+            color: var(--danger-color);
+            padding: 5px;
+            border-radius: 50%;
+            display: none; /* Hidden by default */
+            line-height: 1;
+        }
+        
+        .note-item:hover .note-item-delete {
+            display: block;
+        }
+        
+        .note-item.active:hover .note-item-delete:hover {
+             background: rgba(0,0,0,0.2);
+        }
+
+        .note-item:not(.active):hover .note-item-delete:hover {
+            color: #b71c1c;
+            background: rgba(0,0,0,0.1);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Container */
+        .container {
+            display: flex;
+            flex-direction: column;
+            flex: 1; /* Fills main-content */
+            max-width: 100%;
+            overflow: hidden; /* Prevents container from overflowing */
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: var(--toolbar-bg);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            flex-shrink: 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn-toggle-notes {
+            display: none; /* Hidden on desktop */
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border-color);
+            background-color: var(--editor-bg);
+            color: var(--text-color);
+            border-radius: 4px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #45a049;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #1976D2;
+            transform: translateY(-1px);
+        }
+
+        /* Ad Slot Placeholders */
+        .ad-slot {
+            background-color: #f0f0f0;
+            border: 1px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #888;
+            text-align: center;
+            padding: 0.5rem;
+        }
+
+        body.dark-mode .ad-slot {
+            background-color: #222;
+            border-color: #444;
+            color: #666;
+        }
+
+        .ad-leaderboard-desktop {
+            width: 90%;
+            max-width: 728px;
+            height: 90px;
+            margin: 1rem auto;
+            flex-shrink: 0;
+        }
+
+        .ad-leaderboard-mobile {
+            display: none; /* Hidden by default */
+        }
+        
+        .ad-anchor-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--anchor-ad-height);
+            background-color: var(--bg-color);
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.15);
+            z-index: 2000;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        #notesOverlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 1999;
+        }
+        
+        #notesOverlay.open {
+            display: block;
+        }
+
+
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 2rem;
+            background-color: var(--toolbar-bg);
+            border-bottom: 1px solid var(--border-color);
+            gap: 1rem;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 0.25rem;
+            padding: 0 0.5rem;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .toolbar-group:last-child {
+            border-right: none;
+        }
+
+        .toolbar-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border-color);
+            background-color: var(--editor-bg);
+            color: var(--text-color);
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .toolbar-btn:hover {
+            background-color: var(--hover-bg);
+            transform: scale(1.05);
+        }
+
+        .toolbar-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .toolbar-select {
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--editor-bg);
+            color: var(--text-color);
+            font-family: inherit;
+            cursor: pointer;
+            height: 36px;
+        }
+
+        .ml-auto {
+            margin-left: auto;
+        }
+
+        /* Color Pickers */
+        .color-pickers {
+            align-items: center;
+        }
+
+        .toolbar-color-label {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border-color);
+            background-color: var(--editor-bg);
+            color: var(--text-color);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .toolbar-color-label:hover {
+            background-color: var(--hover-bg);
+            transform: scale(1.05);
+        }
+
+        .toolbar-color-label i {
+            pointer-events: none;
+        }
+
+        .toolbar-color-picker {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+
+        /* Editor Container */
+        .editor-container {
+            flex: 1; /* Takes remaining space */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--editor-bg);
+        }
+
+        .editor {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            outline: none;
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-color);
+            background-color: var(--editor-bg);
+            min-height: 100%;
+        }
+
+        .editor:empty:before {
+            content: "Start typing your notes here...";
+            color: #999;
+            font-style: italic;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 2rem;
+            background-color: var(--toolbar-bg);
+            border-top: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            color: var(--text-color);
+            flex-shrink: 0;
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-right {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: var(--editor-bg);
+            margin: 10% auto;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-content h2 {
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .modal-content p {
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: var(--text-color);
+        }
+
+        .share-input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .share-input-group input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--editor-bg);
+            color: var(--text-color);
+            font-family: inherit;
+        }
+
+        .share-note {
+            font-size: 0.85rem;
+            color: #999;
+            font-style: italic;
+        }
+
+        /* Fullscreen Mode */
+        body.fullscreen .header,
+        body.fullscreen .toolbar,
+        body.fullscreen .status-bar,
+        body.fullscreen .page-wrapper { /* Hide sidebar/ads in fullscreen */
+            display: none;
+        }
+        
+        body.fullscreen .ad-anchor-bottom {
+            display: none;
+        }
+
+        body.fullscreen .container {
+            height: 100vh;
+            flex: 1;
+        }
+
+        body.fullscreen .editor-container {
+            height: 100vh;
+        }
+
+        body.fullscreen .editor {
+            padding: 4rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .btn-toggle-notes {
+                display: flex; /* Show mobile toggle */
+            }
+
+            .notes-sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: calc(100vh - var(--anchor-ad-height));
+                z-index: 2000;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-out;
+                box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+            }
+            
+            .notes-sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                width: 100%;
+            }
+
+            .ad-leaderboard-desktop {
+                display: none; /* Hide desktop ad */
+            }
+
+            .ad-leaderboard-mobile {
+                display: flex; /* Show mobile ad */
+                width: 95%;
+                max-width: 320px;
+                height: 50px;
+                margin: 0.5rem auto;
+            }
+
+            .header {
+                flex-direction: row; /* Keep header as row */
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .header .logo {
+                flex: 1;
+            }
+
+            .header-actions {
+                width: auto;
+                justify-content: flex-end;
+            }
+            
+            /* Hide header buttons on small screens, just show main ones */
+            .header-actions #duplicateBtn,
+            .header-actions #shareBtn {
+                display: none;
+            }
+
+            .toolbar {
+                padding: 0.5rem 1rem;
+                gap: 0.5rem;
+            }
+
+            .toolbar-group {
+                padding: 0 0.25rem;
+            }
+
+            .editor {
+                padding: 1rem;
+            }
+
+            .status-bar {
+                flex-direction: column;
+                gap: 0.5rem;
+                padding: 0.5rem 1rem;
+            }
+
+            .btn {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            .logo h1 {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-actions {
+                flex-direction: column;
+                width: 100%;
+                display: none; /* Hide actions entirely on very small screens, or simplify */
+            }
+            
+            /* Show them if we must */
+            .header-actions {
+                display: flex;
+                flex-direction: row;
+                width: auto;
+            }
+            .header-actions #uploadBtn,
+            .header-actions #downloadBtn {
+                 font-size: 0.75rem;
+                 padding: 0.4rem 0.6rem;
+            }
+
+            .toolbar {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 0.5rem; /* Add padding for scrollbar */
+            }
+
+            .toolbar-group {
+                border-right: none; /* Remove borders on mobile for cleaner look */
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+                overflow: visible;
+            }
+
+            .header,
+            .toolbar,
+            .status-bar,
+            .modal,
+            .page-wrapper, /* Hide all ad/layout wrappers */
+            .notes-sidebar,
+            .ad-anchor-bottom,
+            .ad-slot,
+            #notesOverlay {
+                display: none;
+            }
+
+            .main-content {
+                height: auto;
+                overflow: visible;
+            }
+
+            .container {
+                flex: 0;
+                height: auto;
+                overflow: visible;
+            }
+
+            .editor-container {
+                overflow: visible;
+            }
+
+            .editor {
+                padding: 0;
+                overflow: visible;
+                box-shadow: none;
+                border: none;
+            }
+            
+            /* Apply editor's styles directly to body for printing */
+            body {
+                font-size: var(--editor-font-size, 16px);
+                line-height: var(--editor-line-height, 1.8);
+            }
+        }
+
+        /* Scrollbar Styling */
+        .editor::-webkit-scrollbar,
+        .notes-list::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .editor::-webkit-scrollbar-track,
+        .notes-list::-webkit-scrollbar-track {
+            background: var(--toolbar-bg);
+        }
+
+        .editor::-webkit-scrollbar-thumb,
+        .notes-list::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 5px;
+        }
+
+        .editor::-webkit-scrollbar-thumb:hover,
+        .notes-list::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+
+        /* Text Formatting Styles */
+        .editor b, .editor strong {
+            font-weight: 700;
+        }
+
+        .editor i, .editor em {
+            font-style: italic;
+        }
+
+        .editor u {
+            text-decoration: underline;
+        }
+
+        .editor s {
+            text-decoration: line-through;
+        }
+
+        .editor ul {
+            list-style-type: disc;
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .editor ol {
+            list-style-type: decimal;
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .editor li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="logo">
-                <i class="fas fa-file-alt"></i>
-                <h1>Online Notepad</h1>
+    <div id="notesOverlay"></div>
+    <div class="page-wrapper">
+        <aside id="notes-sidebar" class="notes-sidebar">
+            <h3>My Notes</h3>
+            <button id="newNoteBtn" class="btn btn-primary">
+                <i class="fas fa-plus"></i> New Note
+            </button>
+            <div id="notesList" class="notes-list">
+                <!-- Note items will be dynamically inserted here -->
             </div>
-            <div class="header-actions">
-                <button id="uploadBtn" class="btn btn-secondary" title="Upload File">
-                    <i class="fas fa-upload"></i> Upload
-                </button>
-                <button id="downloadBtn" class="btn btn-secondary" title="Download File">
-                    <i class="fas fa-download"></i> Download
-                </button>
-                <button id="duplicateBtn" class="btn btn-secondary" title="Duplicate Note">
-                    <i class="fas fa-copy"></i> Duplicate
-                </button>
-                <button id="shareBtn" class="btn btn-secondary" title="Share Note">
-                    <i class="fas fa-share-alt"></i> Share
-                </button>
-            </div>
-        </header>
+        </aside>
+        
+        <main class="main-content">
+            <div class="container">
+                <!-- Header -->
+                <header class="header">
+                    <div class="logo">
+                        <button id="toggleNotesBtn" class="btn-toggle-notes" title="Toggle Notes">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <i class="fas fa-file-alt"></i>
+                        <h1>Online Notepad</h1>
+                    </div>
+                    <div class="header-actions">
+                        <button id="uploadBtn" class="btn btn-secondary" title="Upload File">
+                            <i class="fas fa-upload"></i> Upload
+                        </button>
+                        <button id="downloadBtn" class="btn btn-secondary" title="Download File">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                        <button id="duplicateBtn" class="btn btn-secondary" title="Duplicate Note">
+                            <i class="fas fa-copy"></i> Duplicate
+                        </button>
+                        <button id="shareBtn" class="btn btn-secondary" title="Share Note">
+                            <i class="fas fa-share-alt"></i> Share
+                        </button>
+                    </div>
+                </header>
 
-        <!-- Toolbar -->
-        <div class="toolbar">
-            <div class="toolbar-group">
-                <button id="boldBtn" class="toolbar-btn" title="Bold (Ctrl+B)">
-                    <i class="fas fa-bold"></i>
-                </button>
-                <button id="italicBtn" class="toolbar-btn" title="Italic (Ctrl+I)">
-                    <i class="fas fa-italic"></i>
-                </button>
-                <button id="underlineBtn" class="toolbar-btn" title="Underline (Ctrl+U)">
-                    <i class="fas fa-underline"></i>
-                </button>
-                <button id="strikeBtn" class="toolbar-btn" title="Strikethrough">
-                    <i class="fas fa-strikethrough"></i>
-                </button>
-            </div>
-            
-            <div class="toolbar-group">
-                <button id="ulBtn" class="toolbar-btn" title="Bullet List">
-                    <i class="fas fa-list-ul"></i>
-                </button>
-                <button id="olBtn" class="toolbar-btn" title="Numbered List">
-                    <i class="fas fa-list-ol"></i>
-                </button>
-            </div>
+                <!-- Ad Slot: Top Banner -->
+                <div id="ad-slot-leaderboard-desktop" class="ad-slot ad-leaderboard-desktop">
+                    Leaderboard Ad (728x90)
+                </div>
+                <div id="ad-slot-leaderboard-mobile" class="ad-slot ad-leaderboard-mobile">
+                    Mobile Ad (320x50)
+                </div>
 
-            <div class="toolbar-group">
-                <select id="fontSizeSelect" class="font-size-select">
-                    <option value="12px">12px</option>
-                    <option value="14px">14px</option>
-                    <option value="16px" selected>16px</option>
-                    <option value="18px">18px</option>
-                    <option value="20px">20px</option>
-                    <option value="24px">24px</option>
-                    <option value="28px">28px</option>
-                    <option value="32px">32px</option>
-                </select>
-            </div>
+                <!-- Toolbar -->
+                <div class="toolbar">
+                    <!-- Toolbar groups... -->
+                    <div class="toolbar-group">
+                        <button id="undoBtn" class="toolbar-btn" title="Undo (Ctrl+Z)">
+                            <i class="fas fa-undo"></i>
+                        </button>
+                        <button id="redoBtn" class="toolbar-btn" title="Redo (Ctrl+Y)">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                    </div>
 
-            <div class="toolbar-group ml-auto">
-                <button id="clearBtn" class="toolbar-btn" title="Clear All">
-                    <i class="fas fa-eraser"></i>
-                </button>
-                <button id="fullscreenBtn" class="toolbar-btn" title="Fullscreen">
-                    <i class="fas fa-expand"></i>
-                </button>
-                <button id="darkModeBtn" class="toolbar-btn" title="Toggle Dark Mode">
-                    <i class="fas fa-moon"></i>
-                </button>
-            </div>
-        </div>
+                    <div class="toolbar-group">
+                        <button id="boldBtn" class="toolbar-btn" title="Bold (Ctrl+B)">
+                            <i class="fas fa-bold"></i>
+                        </button>
+                        <button id="italicBtn" class="toolbar-btn" title="Italic (Ctrl+I)">
+                            <i class="fas fa-italic"></i>
+                        </button>
+                        <button id="underlineBtn" class="toolbar-btn" title="Underline (Ctrl+U)">
+                            <i class="fas fa-underline"></i>
+                        </button>
+                        <button id="strikeBtn" class="toolbar-btn" title="Strikethrough">
+                            <i class="fas fa-strikethrough"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="toolbar-group">
+                        <button id="ulBtn" class="toolbar-btn" title="Bullet List">
+                            <i class="fas fa-list-ul"></i>
+                        </button>
+                        <button id="olBtn" class="toolbar-btn" title="Numbered List">
+                            <i class="fas fa-list-ol"></i>
+                        </button>
+                    </div>
 
-        <!-- Editor Area -->
-        <div class="editor-container">
-            <div id="editor" class="editor" contenteditable="true" spellcheck="true">
-            </div>
-        </div>
+                    <div class="toolbar-group">
+                        <button id="alignLeftBtn" class="toolbar-btn" title="Align Left">
+                            <i class="fas fa-align-left"></i>
+                        </button>
+                        <button id="alignCenterBtn" class="toolbar-btn" title="Align Center">
+                            <i class="fas fa-align-center"></i>
+                        </button>
+                        <button id="alignRightBtn" class="toolbar-btn" title="Align Right">
+                            <i class="fas fa-align-right"></i>
+                        </button>
+                    </div>
 
-        <!-- Status Bar -->
-        <div class="status-bar">
-            <div class="status-left">
-                <span id="lastSaved">Auto-saved</span>
+                    <div class="toolbar-group">
+                        <select id="fontSizeSelect" class="toolbar-select">
+                            <option value="12px">12px</option>
+                            <option value="14px">14px</option>
+                            <option value="16px" selected>16px</option>
+                            <option value="18px">18px</option>
+                            <option value="20px">20px</option>
+                            <option value="24px">24px</option>
+                            <option value="28px">28px</option>
+                            <option value="32px">32px</option>
+                        </select>
+                    </div>
+
+                    <div class="toolbar-group color-pickers">
+                        <label for="fontColorPicker" class="toolbar-color-label" title="Font Color">
+                            <i class="fas fa-font"></i>
+                            <input type="color" id="fontColorPicker" class="toolbar-color-picker">
+                        </label>
+                        <label for="highlightColorPicker" class="toolbar-color-label" title="Highlight Color">
+                            <i class="fas fa-highlighter"></i>
+                            <input type="color" id="highlightColorPicker" class="toolbar-color-picker">
+                        </label>
+                    </div>
+
+                    <div class="toolbar-group ml-auto">
+                        <button id="printBtn" class="toolbar-btn" title="Print Note">
+                            <i class="fas fa-print"></i>
+                        </button>
+                        <button id="clearBtn" class="toolbar-btn" title="Clear All">
+                            <i class="fas fa-eraser"></i>
+                        </button>
+                        <button id="fullscreenBtn" class="toolbar-btn" title="Fullscreen">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                        <button id="darkModeBtn" class="toolbar-btn" title="Toggle Dark Mode">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Editor Area -->
+                <div class="editor-container">
+                    <div id="editor" class="editor" contenteditable="true" spellcheck="true">
+                    </div>
+                </div>
+
+                <!-- Status Bar -->
+                <div class="status-bar">
+                    <div class="status-left">
+                        <span id="lastSaved">Auto-saved</span>
+                    </div>
+                    <div class="status-right">
+                        <span id="charCount">0</span> characters | 
+                        <span id="wordCount">0</span> words
+                    </div>
+                </div>
             </div>
-            <div class="status-right">
-                <span id="charCount">0</span> characters | 
-                <span id="wordCount">0</span> words
-            </div>
-        </div>
+        </main>
+    </div>
+
+    <!-- Ad Slot: Anchor/Sticky Bottom -->
+    <div id="ad-slot-anchor" class="ad-slot ad-anchor-bottom">
+        Sticky Anchor Ad (320x50 or 728x50)
     </div>
 
     <!-- Hidden file input -->
@@ -121,6 +972,513 @@
         </div>
     </div>
 
-    <script src="js/main.js"></script>
+    <script>
+        // Online Notepad Application
+        class OnlineNotepad {
+            constructor() {
+                this.editor = document.getElementById('editor');
+                this.charCount = document.getElementById('charCount');
+                this.wordCount = document.getElementById('wordCount');
+                this.lastSaved = document.getElementById('lastSaved');
+                this.notesList = document.getElementById('notesList');
+                
+                this.notes = [];
+                this.activeNoteId = null;
+                this.saveTimeout = null;
+                
+                this.init();
+            }
+
+            init() {
+                this.loadNotes();
+                this.loadDarkMode();
+                this.loadSettings();
+                this.setupEventListeners();
+                this.updateCounts();
+                this.loadFromURL(); // Check if a note is being shared
+            }
+
+            setupEventListeners() {
+                // Editor input events
+                this.editor.addEventListener('input', () => {
+                    this.updateCounts();
+                    this.autoSave();
+                });
+
+                // Sidebar listeners
+                document.getElementById('newNoteBtn').addEventListener('click', () => this.handleNewNote());
+                this.notesList.addEventListener('click', (e) => this.handleNoteListClick(e));
+                
+                // Mobile Sidebar Toggle
+                document.getElementById('toggleNotesBtn').addEventListener('click', () => this.toggleNotesSidebar());
+                document.getElementById('notesOverlay').addEventListener('click', () => this.toggleNotesSidebar(false));
+
+                // Toolbar buttons
+                document.getElementById('undoBtn').addEventListener('click', () => this.formatText('undo'));
+                document.getElementById('redoBtn').addEventListener('click', () => this.formatText('redo'));
+                document.getElementById('boldBtn').addEventListener('click', () => this.formatText('bold'));
+                document.getElementById('italicBtn').addEventListener('click', () => this.formatText('italic'));
+                document.getElementById('underlineBtn').addEventListener('click', () => this.formatText('underline'));
+                document.getElementById('strikeBtn').addEventListener('click', () => this.formatText('strikeThrough'));
+                document.getElementById('ulBtn').addEventListener('click', () => this.formatText('insertUnorderedList'));
+                document.getElementById('olBtn').addEventListener('click', () => this.formatText('insertOrderedList'));
+                document.getElementById('alignLeftBtn').addEventListener('click', () => this.formatText('justifyLeft'));
+                document.getElementById('alignCenterBtn').addEventListener('click', () => this.formatText('justifyCenter'));
+                document.getElementById('alignRightBtn').addEventListener('click', () => this.formatText('justifyRight'));
+                
+                // Font size
+                document.getElementById('fontSizeSelect').addEventListener('change', (e) => this.saveSettings());
+
+                // Color pickers
+                document.getElementById('fontColorPicker').addEventListener('input', (e) => this.formatText('foreColor', e.target.value));
+                document.getElementById('highlightColorPicker').addEventListener('input', (e) => this.formatText('backColor', e.target.value));
+
+                // Utility buttons
+                document.getElementById('printBtn').addEventListener('click', () => this.printNote());
+                document.getElementById('clearBtn').addEventListener('click', () => this.clearAll());
+                document.getElementById('fullscreenBtn').addEventListener('click', () => this.toggleFullscreen());
+                document.getElementById('darkModeBtn').addEventListener('click', () => this.toggleDarkMode());
+
+                // File operations
+                document.getElementById('uploadBtn').addEventListener('click', () => this.uploadFile());
+                document.getElementById('downloadBtn').addEventListener('click', () => this.downloadFile());
+                document.getElementById('duplicateBtn').addEventListener('click', () => this.duplicateNote());
+                document.getElementById('shareBtn').addEventListener('click', () => this.shareNote());
+
+                // File input
+                document.getElementById('fileInput').addEventListener('change', (e) => this.handleFileUpload(e));
+
+                // Modal
+                const modal = document.getElementById('shareModal');
+                const closeBtn = modal.querySelector('.close');
+                closeBtn.addEventListener('click', () => modal.style.display = 'none');
+                window.addEventListener('click', (e) => {
+                    if (e.target === modal) modal.style.display = 'none';
+                });
+
+                // Copy link button
+                document.getElementById('copyLinkBtn').addEventListener('click', () => this.copyShareLink());
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.ctrlKey || e.metaKey) {
+                        switch(e.key.toLowerCase()) {
+                            case 'b': e.preventDefault(); this.formatText('bold'); break;
+                            case 'i': e.preventDefault(); this.formatText('italic'); break;
+                            case 'u': e.preventDefault(); this.formatText('underline'); break;
+                            case 's': e.preventDefault(); this.saveActiveNote(); break;
+                            case 'z': e.preventDefault(); this.formatText('undo'); break;
+                            case 'y': e.preventDefault(); this.formatText('redo'); break;
+                        }
+                    }
+                });
+            }
+            
+            // --- Note Management ---
+
+            loadNotes() {
+                const savedNotes = localStorage.getItem('notepad_notes');
+                this.notes = savedNotes ? JSON.parse(savedNotes) : [];
+                
+                let activeId = localStorage.getItem('notepad_activeNoteId');
+                
+                if (this.notes.length === 0) {
+                    // Create a default note if none exist
+                    const newNote = { id: Date.now(), title: "My First Note", content: "Welcome to your new notepad!" };
+                    this.notes.push(newNote);
+                    this.activeNoteId = newNote.id;
+                    this.saveNotes();
+                } else {
+                    // Check if activeId is valid, otherwise default to first note
+                    this.activeNoteId = activeId && this.notes.find(n => n.id == activeId) ? activeId : this.notes[0].id;
+                }
+                
+                localStorage.setItem('notepad_activeNoteId', this.activeNoteId);
+                const activeNote = this.notes.find(n => n.id == this.activeNoteId);
+                this.editor.innerHTML = activeNote.content;
+                this.updateSidebarUI();
+            }
+            
+            updateSidebarUI() {
+                this.notesList.innerHTML = '';
+                if (this.notes.length === 0) {
+                    this.notesList.innerHTML = '<p style="padding: 0.5rem; text-align: center; font-size: 0.9rem; color: #888;">No notes yet.</p>';
+                    return;
+                }
+                
+                this.notes.forEach(note => {
+                    const noteItem = document.createElement('div');
+                    noteItem.className = 'note-item';
+                    noteItem.dataset.id = note.id;
+                    
+                    if (note.id == this.activeNoteId) {
+                        noteItem.classList.add('active');
+                    }
+                    
+                    const title = document.createElement('div');
+                    title.className = 'note-item-title';
+                    title.textContent = note.title;
+                    
+                    const deleteBtn = document.createElement('span');
+                    deleteBtn.className = 'note-item-delete';
+                    deleteBtn.innerHTML = '&times;'; // 'X' icon
+                    deleteBtn.dataset.id = note.id;
+                    deleteBtn.title = "Delete Note";
+                    
+                    noteItem.appendChild(title);
+                    noteItem.appendChild(deleteBtn);
+                    this.notesList.appendChild(noteItem);
+                });
+            }
+            
+            handleNoteListClick(e) {
+                const deleteBtn = e.target.closest('.note-item-delete');
+                if (deleteBtn) {
+                    e.stopPropagation(); // Prevent selection
+                    this.handleDeleteNote(deleteBtn.dataset.id);
+                    return;
+                }
+                
+                const noteItem = e.target.closest('.note-item');
+                if (noteItem) {
+                    this.handleSelectNote(noteItem.dataset.id);
+                }
+            }
+
+            handleNewNote() {
+                this.saveActiveNote(); // Save current work
+                
+                const newNote = { id: Date.now(), title: "New Note", content: "" };
+                this.notes.unshift(newNote); // Add to top
+                this.activeNoteId = newNote.id;
+                
+                this.saveNotes();
+                
+                this.editor.innerHTML = "";
+                this.updateCounts();
+                this.updateSidebarUI();
+                this.editor.focus();
+                
+                this.toggleNotesSidebar(false); // Close mobile sidebar if open
+            }
+
+            handleSelectNote(noteId) {
+                if (noteId == this.activeNoteId) return;
+                
+                this.saveActiveNote(); // Save previous note
+                
+                this.activeNoteId = noteId;
+                const activeNote = this.notes.find(n => n.id == this.activeNoteId);
+                
+                if (activeNote) {
+                    this.editor.innerHTML = activeNote.content;
+                    localStorage.setItem('notepad_activeNoteId', this.activeNoteId);
+                    this.updateCounts();
+                    this.updateSidebarUI();
+                } else {
+                    // Note was deleted or is invalid, load first note
+                    this.handleSelectNote(this.notes[0].id);
+                }
+                
+                this.toggleNotesSidebar(false); // Close mobile sidebar if open
+            }
+            
+            handleDeleteNote(noteId) {
+                this.notes = this.notes.filter(n => n.id != noteId);
+                
+                let nextActiveId = null;
+                if (this.activeNoteId == noteId) {
+                    if (this.notes.length > 0) {
+                        nextActiveId = this.notes[0].id; // Select first note
+                    }
+                }
+                
+                this.saveNotes(); // Save the deletion
+                this.updateSidebarUI();
+
+                if (nextActiveId) {
+                    this.handleSelectNote(nextActiveId); // Switch to new active note
+                } else if (this.notes.length === 0) {
+                    this.handleNewNote(); // Create a new note if list is empty
+                }
+            }
+            
+            getNoteTitle(plainText) {
+                const trimmedText = plainText.trim();
+                if (!trimmedText) return "New Note";
+                return trimmedText.split('\n')[0].substring(0, 40) || "New Note";
+            }
+            
+            // --- Saving and Loading ---
+
+            autoSave() {
+                clearTimeout(this.saveTimeout);
+                this.saveTimeout = setTimeout(() => {
+                    this.saveActiveNote();
+                }, 1000);
+            }
+
+            saveActiveNote() {
+                if (!this.activeNoteId) return;
+                
+                const activeNote = this.notes.find(n => n.id == this.activeNoteId);
+                if (!activeNote) return;
+
+                const currentContent = this.editor.innerHTML;
+                const currentTitle = this.getNoteTitle(this.editor.innerText);
+                
+                // Only save if content or title changed
+                if (activeNote.content !== currentContent || activeNote.title !== currentTitle) {
+                    activeNote.content = currentContent;
+                    activeNote.title = currentTitle;
+                    
+                    this.saveNotes();
+                    this.updateLastSaved();
+                    
+                    // Update title in sidebar
+                    const noteItem = this.notesList.querySelector(`.note-item[data-id="${this.activeNoteId}"] .note-item-title`);
+                    if (noteItem) {
+                        noteItem.textContent = currentTitle;
+                    }
+                }
+            }
+            
+            saveNotes() {
+                localStorage.setItem('notepad_notes', JSON.stringify(this.notes));
+                localStorage.setItem('notepad_activeNoteId', this.activeNoteId);
+            }
+
+            loadSettings() {
+                const fontSize = localStorage.getItem('notepad_fontSize');
+                if (fontSize) {
+                    this.editor.style.fontSize = fontSize;
+                    document.getElementById('fontSizeSelect').value = fontSize;
+                }
+            }
+
+            saveSettings() {
+                const fontSize = document.getElementById('fontSizeSelect').value;
+                this.editor.style.fontSize = fontSize;
+                localStorage.setItem('notepad_fontSize', fontSize);
+            }
+            
+            loadFromURL() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const note = urlParams.get('note');
+                
+                if (note) {
+                    try {
+                        // Import the shared note as a new note
+                        const content = decodeURIComponent(atob(note));
+                        const title = this.getNoteTitle(content.replace(/<[^>]+>/g, ' ')); // Get title from plain text
+                        
+                        const newNote = { id: Date.now(), title, content };
+                        this.notes.unshift(newNote);
+                        this.activeNoteId = newNote.id;
+                        
+                        this.saveNotes();
+                        this.editor.innerHTML = content;
+                        this.updateCounts();
+                        this.updateSidebarUI();
+                        
+                        // Clear the URL parameter
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    } catch (e) {
+                        console.error('Error loading shared note:', e);
+                        this.editor.innerHTML = "<p>Error: Could not load the shared note. It might be corrupted.</p>";
+                    }
+                }
+            }
+
+            // --- Formatting and Utility ---
+
+            formatText(command, value = null) {
+                document.execCommand(command, false, value);
+                this.editor.focus();
+                this.updateCounts();
+                this.autoSave(); // Trigger save after formatting
+            }
+
+            updateCounts() {
+                const text = this.editor.innerText || '';
+                const chars = text.length;
+                const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+                
+                this.charCount.textContent = chars;
+                this.wordCount.textContent = words;
+            }
+
+            updateLastSaved() {
+                const now = new Date();
+                const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                this.lastSaved.textContent = `Auto-saved at ${time}`;
+            }
+
+            toggleDarkMode() {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('notepad_darkMode', isDark);
+                
+                const icon = document.querySelector('#darkModeBtn i');
+                icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            }
+
+            loadDarkMode() {
+                const isDark = localStorage.getItem('notepad_darkMode') === 'true';
+                if (isDark) {
+                    document.body.classList.add('dark-mode');
+                    const icon = document.querySelector('#darkModeBtn i');
+                    icon.className = 'fas fa-sun';
+                }
+            }
+
+            toggleFullscreen() {
+                document.body.classList.toggle('fullscreen');
+                const icon = document.querySelector('#fullscreenBtn i');
+                const isFullscreen = document.body.classList.contains('fullscreen');
+                icon.className = isFullscreen ? 'fas fa-compress' : 'fas fa-expand';
+            }
+            
+            toggleNotesSidebar(forceOpen = null) {
+                const sidebar = document.getElementById('notes-sidebar');
+                const overlay = document.getElementById('notesOverlay');
+                const isOpen = sidebar.classList.contains('open');
+                
+                if (forceOpen === true || (forceOpen === null && !isOpen)) {
+                    sidebar.classList.add('open');
+                    overlay.classList.add('open');
+                } else {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('open');
+                }
+            }
+
+            clearAll() {
+                // Now "Clear All" clears the *current* note.
+                this.editor.innerHTML = '';
+                this.updateCounts();
+                this.saveActiveNote(); // Saves the cleared content
+            }
+
+            printNote() {
+                document.body.style.setProperty('--editor-font-size', this.editor.style.fontSize || '16px');
+                document.body.style.setProperty('--editor-line-height', this.editor.style.lineHeight || '1.8');
+                window.print();
+            }
+
+            // --- File Operations ---
+
+            uploadFile() {
+                // This will import the file as a *new note*
+                document.getElementById('fileInput').click();
+            }
+
+            async handleFileUpload(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                
+                reader.onload = (e) => {
+                    let content = e.target.result;
+                    
+                    if (file.type === 'text/plain') {
+                        content = content.replace(/\n/g, '<br>');
+                    }
+                    
+                    // Create a new note for the uploaded content
+                    const title = this.getNoteTitle(content.replace(/<[^>]+>/g, ' '));
+                    const newNote = { id: Date.now(), title, content };
+                    this.notes.unshift(newNote);
+                    this.activeNoteId = newNote.id;
+                    
+                    this.saveNotes();
+                    this.editor.innerHTML = content;
+                    this.updateCounts();
+                    this.updateSidebarUI();
+                };
+
+                reader.readAsText(file);
+                event.target.value = ''; // Reset file input
+            }
+
+            downloadFile() {
+                // Downloads the *current* note as .txt
+                const activeNote = this.notes.find(n => n.id == this.activeNoteId);
+                const content = this.editor.innerText; // Download plain text version
+                const blob = new Blob([content], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                
+                // Sanitize title for filename
+                const fileName = (activeNote.title || 'notepad').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                a.download = `${fileName}.txt`;
+                
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+
+            duplicateNote() {
+                // Duplicates the *current* note and opens it in a new window (original behavior)
+                const content = this.editor.innerHTML;
+                const newWindow = window.open('', '_blank');
+                if (newWindow) {
+                    newWindow.document.write(`
+                        <!DOCTYPE html><html lang="en"><head><title>Duplicated Note</title>
+                        <style>body { font-family: -apple-system, sans-serif; padding: 2rem; } .editor { border: 1px solid #ccc; padding: 1rem; }</style></head>
+                        <body><h1>Duplicated Note</h1><div class="editor" contenteditable="true">${content}</div></body></html>
+                    `);
+                    newWindow.document.close();
+                }
+            }
+
+            shareNote() {
+                // Shares the *current* note
+                try {
+                    const content = this.editor.innerHTML;
+                    const encoded = btoa(encodeURIComponent(content));
+                    const url = `${window.location.origin}${window.location.pathname}?note=${encoded}`;
+                    
+                    document.getElementById('shareLink').value = url;
+                    document.getElementById('shareModal').style.display = 'block';
+                } catch (e) {
+                    console.error("Error creating share link:", e);
+                    document.getElementById('shareLink').value = "Error: Note is too large to share via URL.";
+                    document.getElementById('shareModal').style.display = 'block';
+                }
+            }
+
+            copyShareLink() {
+                const input = document.getElementById('shareLink');
+                input.select();
+                try {
+                    document.execCommand('copy'); // Using execCommand for iframe compatibility
+                    this.showCopySuccess();
+                } catch (err) {
+                    console.error('Failed to copy link.');
+                }
+            }
+            
+            showCopySuccess() {
+                const btn = document.getElementById('copyLinkBtn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.style.backgroundColor = '#4CAF50';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.backgroundColor = '';
+                }, 2000);
+            }
+        }
+
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new OnlineNotepad();
+        });
+    </script>
 </body>
 </html>
