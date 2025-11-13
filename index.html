@@ -28,7 +28,7 @@
             --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             --hover-bg: #e8e8e8;
             --anchor-ad-height: 50px;
-            --sidebar-width: 260px; /* Widened for note titles */
+            --sidebar-width: 182px; /* 30% reduction from 260px */
         }
 
         body.dark-mode {
@@ -53,7 +53,7 @@
         /* Page Layout Wrappers */
         .page-wrapper {
             display: flex;
-            height: calc(100vh - var(--anchor-ad-height));
+            height: 100vh; /* Reverted to full height */
             width: 100%;
             overflow: hidden;
         }
@@ -109,7 +109,7 @@
             border-color: var(--primary-color);
         }
         
-        .note-item.active .note-item-delete {
+        .note-item.active .note-item-actions span {
             color: white;
         }
 
@@ -118,34 +118,78 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            padding-right: 20px; /* Space for delete button */
+            padding-right: 45px; /* Space for action buttons */
+            transition: opacity 0.2s ease;
+            line-height: 1.4; /* Added for uniformity */
+        }
+        
+        .note-item-title.editing {
+            display: none;
         }
 
-        .note-item-delete {
+        .note-item-rename {
+            display: none;
+            width: 100%;
+            padding: 4px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            border: 1px solid var(--secondary-color);
+            border-radius: 4px;
+            outline: none;
+            color: var(--text-color);
+            background-color: var(--editor-bg);
+            line-height: 1.4; /* Added for uniformity */
+        }
+        
+        .note-item-rename.editing {
+            display: block;
+            margin-bottom: 5px; /* Add space when editing */
+        }
+        
+        .note-item-actions {
             position: absolute;
             top: 50%;
-            right: 10px;
+            right: 8px;
             transform: translateY(-50%);
+            display: flex;
+            gap: 4px;
+        }
+        
+        .note-item-actions span {
             font-size: 0.9rem;
-            color: var(--danger-color);
+            color: #888;
             padding: 5px;
             border-radius: 50%;
             display: none; /* Hidden by default */
             line-height: 1;
+            transition: all 0.2s ease;
         }
-        
-        .note-item:hover .note-item-delete {
+
+        .note-item:hover .note-item-actions span {
             display: block;
         }
         
-        .note-item.active:hover .note-item-delete:hover {
+        .note-item-rename-btn {
+            color: var(--secondary-color); /* REMOVED !important */
+        }
+        .note-item-delete {
+            color: var(--danger-color); /* REMOVED !important */
+        }
+
+        .note-item.active:hover .note-item-actions span:hover {
              background: rgba(0,0,0,0.2);
         }
 
-        .note-item:not(.active):hover .note-item-delete:hover {
-            color: #b71c1c;
+        .note-item:not(.active):hover .note-item-actions span.note-item-rename-btn:hover {
+            color: #1976D2 !important;
             background: rgba(0,0,0,0.1);
         }
+        
+        .note-item:not(.active):hover .note-item-actions span.note-item-delete:hover {
+            color: #b71c1c !important;
+            background: rgba(0,0,0,0.1);
+        }
+
 
         .main-content {
             flex-grow: 1;
@@ -153,6 +197,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative; 
         }
 
         /* Container */
@@ -201,8 +246,8 @@
         
         .btn-toggle-notes {
             display: none; /* Hidden on desktop */
-            width: 36px;
-            height: 36px;
+            width: 32px; /* Reduced from 36px */
+            height: 32px; /* Reduced from 36px */
             border: 1px solid var(--border-color);
             background-color: var(--editor-bg);
             color: var(--text-color);
@@ -211,7 +256,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease;
-            font-size: 1rem;
+            font-size: 0.9rem; /* Reduced font size */
         }
 
         /* Buttons */
@@ -227,6 +272,12 @@
             gap: 0.5rem;
             transition: all 0.3s ease;
             font-family: inherit;
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+            border-radius: 4px;
         }
 
         .btn-primary {
@@ -253,7 +304,7 @@
         .ad-slot {
             background-color: #f0f0f0;
             border: 1px dashed #ccc;
-            display: flex;
+            display: none; /* Hides all ad slots */
             align-items: center;
             justify-content: center;
             font-size: 0.9rem;
@@ -329,8 +380,8 @@
         }
 
         .toolbar-btn {
-            width: 36px;
-            height: 36px;
+            width: 32px; /* Reduced from 36px */
+            height: 32px; /* Reduced from 36px */
             border: 1px solid var(--border-color);
             background-color: var(--editor-bg);
             color: var(--text-color);
@@ -340,11 +391,18 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease;
+            font-size: 0.9rem; /* Slightly smaller icon size */
         }
 
         .toolbar-btn:hover {
             background-color: var(--hover-bg);
             transform: scale(1.05);
+        }
+        
+        .toolbar-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: var(--hover-bg);
         }
 
         .toolbar-btn.active {
@@ -354,14 +412,15 @@
         }
 
         .toolbar-select {
-            padding: 0.5rem;
+            padding: 0 0.5rem; /* Removed vertical padding to fix text clipping */
             border: 1px solid var(--border-color);
             border-radius: 4px;
             background-color: var(--editor-bg);
             color: var(--text-color);
             font-family: inherit;
             cursor: pointer;
-            height: 36px;
+            height: 32px; /* Reduced from 36px */
+            font-size: 0.9rem;
         }
 
         .ml-auto {
@@ -378,14 +437,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 36px;
-            height: 36px;
+            width: 32px; /* Reduced from 36px */
+            height: 32px; /* Reduced from 36px */
             border: 1px solid var(--border-color);
             background-color: var(--editor-bg);
             color: var(--text-color);
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.2s ease;
+            font-size: 0.9rem;
         }
 
         .toolbar-color-label:hover {
@@ -434,7 +494,12 @@
             color: #999;
             font-style: italic;
         }
-
+        
+        .editor ::selection {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
         /* Status Bar */
         .status-bar {
             display: flex;
@@ -545,29 +610,36 @@
             font-style: italic;
         }
 
-        /* Fullscreen Mode */
-        body.fullscreen .header,
-        body.fullscreen .toolbar,
-        body.fullscreen .status-bar,
-        body.fullscreen .page-wrapper { /* Hide sidebar/ads in fullscreen */
+        /* "Full Width" Mode (was Fullscreen) */
+        body.fullscreen .notes-sidebar, /* Hides the sidebar */
+        body.fullscreen .ad-slot, /* Hides all ad slots */
+        body.fullscreen #ad-slot-anchor, /* Specifically hides anchor ad */
+        body.fullscreen #notesOverlay {
             display: none;
         }
         
-        body.fullscreen .ad-anchor-bottom {
-            display: none;
+        /* Make the main content and container fill the screen */
+        body.fullscreen .page-wrapper {
+             height: 100vh;
         }
 
-        body.fullscreen .container {
-            height: 100vh;
-            flex: 1;
+        body.fullscreen .main-content {
+            width: 100%; /* Take full width */
+            flex-grow: 1;
         }
-
+        
+        body.fullscreen .header,
+        body.fullscreen .toolbar,
+        body.fullscreen .status-bar {
+            border-radius: 0; /* Remove rounded corners if any */
+        }
+        
         body.fullscreen .editor-container {
-            height: 100vh;
+            height: 100%; /* Expand editor container */
         }
 
         body.fullscreen .editor {
-            padding: 4rem;
+            /* No special padding, use default */
         }
 
         /* Responsive Design */
@@ -580,7 +652,7 @@
                 position: fixed;
                 top: 0;
                 left: 0;
-                height: calc(100vh - var(--anchor-ad-height));
+                height: 100vh; /* Reverted to full height */
                 z-index: 2000;
                 transform: translateX(-100%);
                 transition: transform 0.3s ease-out;
@@ -693,33 +765,34 @@
                 background: white;
                 color: black;
                 overflow: visible;
+                font-size: var(--editor-font-size, 16px);
+                line-height: var(--editor-line-height, 1.8);
             }
 
+            /* Hide all UI elements, ads, and modals */
             .header,
             .toolbar,
             .status-bar,
             .modal,
-            .page-wrapper, /* Hide all ad/layout wrappers */
             .notes-sidebar,
             .ad-anchor-bottom,
             .ad-slot,
-            #notesOverlay {
+            #notesOverlay,
+            .btn-toggle-notes,
+            .header-actions {
                 display: none;
             }
 
-            .main-content {
-                height: auto;
-                overflow: visible;
-            }
-
-            .container {
-                flex: 0;
-                height: auto;
-                overflow: visible;
-            }
-
+            /* Reset the main layout containers for printing */
+            .page-wrapper,
+            .main-content,
+            .container,
             .editor-container {
-                overflow: visible;
+                display: block !important;
+                width: 100% !important;
+                height: auto !important;
+                overflow: visible !important;
+                flex: none !important;
             }
 
             .editor {
@@ -727,12 +800,8 @@
                 overflow: visible;
                 box-shadow: none;
                 border: none;
-            }
-            
-            /* Apply editor's styles directly to body for printing */
-            body {
-                font-size: var(--editor-font-size, 16px);
-                line-height: var(--editor-line-height, 1.8);
+                color: black; /* Ensure text is black */
+                background: white; /* Ensure background is white */
             }
         }
 
@@ -842,7 +911,18 @@
 
                 <!-- Toolbar -->
                 <div class="toolbar">
-                    <!-- Toolbar groups... -->
+                    <div class="toolbar-group">
+                        <button id="cutBtn" class="toolbar-btn" title="Cut (Ctrl+X)">
+                            <i class="fas fa-cut"></i>
+                        </button>
+                        <button id="copyBtn" class="toolbar-btn" title="Copy (Ctrl+C)">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <button id="pasteBtn" class="toolbar-btn" title="Paste (Ctrl+V)">
+                            <i class="fas fa-paste"></i>
+                        </button>
+                    </div>
+
                     <div class="toolbar-group">
                         <button id="undoBtn" class="toolbar-btn" title="Undo (Ctrl+Z)">
                             <i class="fas fa-undo"></i>
@@ -919,7 +999,7 @@
                         <button id="clearBtn" class="toolbar-btn" title="Clear All">
                             <i class="fas fa-eraser"></i>
                         </button>
-                        <button id="fullscreenBtn" class="toolbar-btn" title="Fullscreen">
+                        <button id="fullscreenBtn" class="toolbar-btn" title="Toggle Full Width">
                             <i class="fas fa-expand"></i>
                         </button>
                         <button id="darkModeBtn" class="toolbar-btn" title="Toggle Dark Mode">
@@ -948,7 +1028,7 @@
         </main>
     </div>
 
-    <!-- Ad Slot: Anchor/Sticky Bottom -->
+    <!-- Ad Slot: Anchor/Sticky Bottom (Now hidden by .ad-slot style) -->
     <div id="ad-slot-anchor" class="ad-slot ad-anchor-bottom">
         Sticky Anchor Ad (320x50 or 728x50)
     </div>
@@ -1014,6 +1094,10 @@
                 document.getElementById('notesOverlay').addEventListener('click', () => this.toggleNotesSidebar(false));
 
                 // Toolbar buttons
+                document.getElementById('cutBtn').addEventListener('click', () => this.formatText('cut'));
+                document.getElementById('copyBtn').addEventListener('click', () => this.formatText('copy'));
+                document.getElementById('pasteBtn').addEventListener('click', () => this.formatText('paste'));
+                
                 document.getElementById('undoBtn').addEventListener('click', () => this.formatText('undo'));
                 document.getElementById('redoBtn').addEventListener('click', () => this.formatText('redo'));
                 document.getElementById('boldBtn').addEventListener('click', () => this.formatText('bold'));
@@ -1067,6 +1151,9 @@
                             case 'i': e.preventDefault(); this.formatText('italic'); break;
                             case 'u': e.preventDefault(); this.formatText('underline'); break;
                             case 's': e.preventDefault(); this.saveActiveNote(); break;
+                            case 'x': e.preventDefault(); this.formatText('cut'); break;
+                            case 'c': e.preventDefault(); this.formatText('copy'); break;
+                            // Paste (Ctrl+V) is handled natively by the browser
                             case 'z': e.preventDefault(); this.formatText('undo'); break;
                             case 'y': e.preventDefault(); this.formatText('redo'); break;
                         }
@@ -1084,7 +1171,7 @@
                 
                 if (this.notes.length === 0) {
                     // Create a default note if none exist
-                    const newNote = { id: Date.now(), title: "My First Note", content: "Welcome to your new notepad!" };
+                    const newNote = { id: Date.now(), title: "My First Note", content: "Welcome to your new notepad!", hasCustomTitle: false };
                     this.notes.push(newNote);
                     this.activeNoteId = newNote.id;
                     this.saveNotes();
@@ -1106,6 +1193,9 @@
                     return;
                 }
                 
+                // Ensure notes are sorted (newest first)
+                this.notes.sort((a, b) => b.id - a.id);
+                
                 this.notes.forEach(note => {
                     const noteItem = document.createElement('div');
                     noteItem.className = 'note-item';
@@ -1119,14 +1209,32 @@
                     title.className = 'note-item-title';
                     title.textContent = note.title;
                     
+                    const renameInput = document.createElement('input');
+                    renameInput.type = 'text';
+                    renameInput.className = 'note-item-rename';
+                    renameInput.value = note.title;
+                    
+                    const actions = document.createElement('div');
+                    actions.className = 'note-item-actions';
+                    
+                    const renameBtn = document.createElement('span');
+                    renameBtn.className = 'note-item-rename-btn';
+                    renameBtn.innerHTML = '<i class="fas fa-pencil-alt"></i>';
+                    renameBtn.dataset.id = note.id;
+                    renameBtn.title = "Rename Note";
+                    
                     const deleteBtn = document.createElement('span');
                     deleteBtn.className = 'note-item-delete';
                     deleteBtn.innerHTML = '&times;'; // 'X' icon
                     deleteBtn.dataset.id = note.id;
                     deleteBtn.title = "Delete Note";
                     
+                    actions.appendChild(renameBtn);
+                    actions.appendChild(deleteBtn);
+                    
                     noteItem.appendChild(title);
-                    noteItem.appendChild(deleteBtn);
+                    noteItem.appendChild(renameInput);
+                    noteItem.appendChild(actions);
                     this.notesList.appendChild(noteItem);
                 });
             }
@@ -1139,16 +1247,78 @@
                     return;
                 }
                 
+                const renameBtn = e.target.closest('.note-item-rename-btn');
+                if (renameBtn) {
+                    e.stopPropagation(); // Prevent selection
+                    this.handleRenameNote(renameBtn.dataset.id);
+                    return;
+                }
+                
                 const noteItem = e.target.closest('.note-item');
-                if (noteItem) {
+                if (noteItem && !e.target.closest('.note-item-rename')) {
                     this.handleSelectNote(noteItem.dataset.id);
                 }
             }
+            
+            handleRenameNote(noteId) {
+                const noteItem = this.notesList.querySelector(`.note-item[data-id="${noteId}"]`);
+                const titleEl = noteItem.querySelector('.note-item-title');
+                const inputEl = noteItem.querySelector('.note-item-rename');
+                
+                titleEl.classList.add('editing');
+                inputEl.classList.add('editing');
+                inputEl.value = titleEl.textContent; // Ensure it has the latest title
+                inputEl.select();
+                
+                const saveRename = () => {
+                    this.handleRenameSave(noteId, inputEl);
+                    // Clean up listeners
+                    inputEl.removeEventListener('blur', saveRename);
+                    inputEl.removeEventListener('keydown', onKeydown);
+                };
+                
+                const onKeydown = (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        saveRename();
+                    } else if (e.key === 'Escape') {
+                        e.preventDefault();
+                        // Cancel rename
+                        titleEl.classList.remove('editing');
+                        inputEl.classList.remove('editing');
+                        inputEl.removeEventListener('blur', saveRename);
+                        inputEl.removeEventListener('keydown', onKeydown);
+                    }
+                };
+                
+                inputEl.addEventListener('blur', saveRename);
+                inputEl.addEventListener('keydown', onKeydown);
+            }
+            
+            handleRenameSave(noteId, inputEl) {
+                const note = this.notes.find(n => n.id == noteId);
+                const noteItem = this.notesList.querySelector(`.note-item[data-id="${noteId}"]`);
+                const titleEl = noteItem.querySelector('.note-item-title');
+                
+                const newTitle = inputEl.value.trim();
+                
+                if (newTitle && newTitle !== note.title) {
+                    note.title = newTitle;
+                    note.hasCustomTitle = true; // Lock the title
+                    this.saveNotes();
+                    titleEl.textContent = newTitle;
+                }
+                
+                // Revert UI
+                titleEl.classList.remove('editing');
+                inputEl.classList.remove('editing');
+            }
+
 
             handleNewNote() {
                 this.saveActiveNote(); // Save current work
                 
-                const newNote = { id: Date.now(), title: "New Note", content: "" };
+                const newNote = { id: Date.now(), title: "New Note", content: "", hasCustomTitle: false };
                 this.notes.unshift(newNote); // Add to top
                 this.activeNoteId = newNote.id;
                 
@@ -1177,7 +1347,11 @@
                     this.updateSidebarUI();
                 } else {
                     // Note was deleted or is invalid, load first note
-                    this.handleSelectNote(this.notes[0].id);
+                    if(this.notes.length > 0) {
+                        this.handleSelectNote(this.notes[0].id);
+                    } else {
+                        this.handleNewNote(); // No notes left, create one
+                    }
                 }
                 
                 this.toggleNotesSidebar(false); // Close mobile sidebar if open
@@ -1227,18 +1401,27 @@
                 const currentContent = this.editor.innerHTML;
                 const currentTitle = this.getNoteTitle(this.editor.innerText);
                 
-                // Only save if content or title changed
-                if (activeNote.content !== currentContent || activeNote.title !== currentTitle) {
-                    activeNote.content = currentContent;
+                let titleChanged = false;
+                
+                // Only update title automatically if it hasn't been manually set
+                if (!activeNote.hasCustomTitle && activeNote.title !== currentTitle) {
                     activeNote.title = currentTitle;
+                    titleChanged = true;
+                }
+                
+                // Only save if content or title changed
+                if (activeNote.content !== currentContent || titleChanged) {
+                    activeNote.content = currentContent;
                     
                     this.saveNotes();
                     this.updateLastSaved();
                     
-                    // Update title in sidebar
-                    const noteItem = this.notesList.querySelector(`.note-item[data-id="${this.activeNoteId}"] .note-item-title`);
-                    if (noteItem) {
-                        noteItem.textContent = currentTitle;
+                    if (titleChanged) {
+                        // Update title in sidebar
+                        const noteItem = this.notesList.querySelector(`.note-item[data-id="${this.activeNoteId}"] .note-item-title`);
+                        if (noteItem) {
+                            noteItem.textContent = currentTitle;
+                        }
                     }
                 }
             }
@@ -1272,7 +1455,7 @@
                         const content = decodeURIComponent(atob(note));
                         const title = this.getNoteTitle(content.replace(/<[^>]+>/g, ' ')); // Get title from plain text
                         
-                        const newNote = { id: Date.now(), title, content };
+                        const newNote = { id: Date.now(), title, content, hasCustomTitle: false };
                         this.notes.unshift(newNote);
                         this.activeNoteId = newNote.id;
                         
@@ -1293,7 +1476,18 @@
             // --- Formatting and Utility ---
 
             formatText(command, value = null) {
-                document.execCommand(command, false, value);
+                // For paste, we must handle it differently for security
+                if (command === 'paste') {
+                    navigator.clipboard.readText()
+                        .then(text => {
+                            document.execCommand('insertText', false, text);
+                        })
+                        .catch(err => {
+                            console.error('Failed to read clipboard contents: ', err);
+                        });
+                } else {
+                    document.execCommand(command, false, value);
+                }
                 this.editor.focus();
                 this.updateCounts();
                 this.autoSave(); // Trigger save after formatting
@@ -1388,7 +1582,7 @@
                     
                     // Create a new note for the uploaded content
                     const title = this.getNoteTitle(content.replace(/<[^>]+>/g, ' '));
-                    const newNote = { id: Date.now(), title, content };
+                    const newNote = { id: Date.now(), title, content, hasCustomTitle: false };
                     this.notes.unshift(newNote);
                     this.activeNoteId = newNote.id;
                     
