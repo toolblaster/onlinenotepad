@@ -63,6 +63,7 @@
                 <!-- Toolbar -->
                 <div class="toolbar">
                     <!-- Toolbar groups... -->
+                    <!-- ADDING BUTTONS BACK -->
                     <div class="toolbar-group">
                         <button id="undoBtn" class="toolbar-btn" title="Undo (Ctrl+Z)">
                             <i class="fas fa-undo"></i>
@@ -122,8 +123,17 @@
                             <i class="fas fa-align-right"></i>
                         </button>
                     </div>
-
+                    <!-- END OF ADDED BUTTONS -->
+                    
                     <div class="toolbar-group">
+                         <!-- NEW DROPDOWN -->
+                         <select id="formatBlockSelect" class="toolbar-select" title="Text Style">
+                            <option value="<p>" selected>Normal Text</option>
+                            <option value="<h1>">Heading 1</option>
+                            <option value="<h2>">Heading 2</option>
+                            <option value="<h3>">Heading 3</option>
+                        </select>
+                         <!-- EXISTING DROPDOWNS -->
                          <select id="fontFamilySelect" class="toolbar-select">
                             <option value="Inter, -apple-system, sans-serif" selected>Inter</option>
                             <option value="Arial, sans-serif">Arial</option>
