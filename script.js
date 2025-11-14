@@ -10,6 +10,7 @@ class OnlineNotepad {
         this.notes = [];
         this.activeNoteId = null;
         this.saveTimeout = null;
+        this.maxNotes = 12; // Add max notes limit
         
         this.init();
     }
@@ -151,6 +152,11 @@ class OnlineNotepad {
         const savedNotes = localStorage.getItem('notepad_notes');
         this.notes = savedNotes ? JSON.parse(savedNotes) : [];
         
+        // Enforce note limit on load, trimming older notes if necessary
+        if (this.notes.length > this.maxNotes) {
+            this.notes = this.notes.slice(0, this.maxNotes);
+        }
+
         let activeId = localStorage.getItem('notepad_activeNoteId');
         
         if (this.notes.length === 0) {
@@ -174,6 +180,7 @@ class OnlineNotepad {
         this.notesList.innerHTML = '';
         if (this.notes.length === 0) {
             this.notesList.innerHTML = '<p style="padding: 0.5rem; text-align: center; font-size: 0.9rem; color: #888;">No notes yet.</p>';
+            this.updateNewNoteButtonState(); // Update button state
             return;
         }
         
@@ -212,6 +219,8 @@ class OnlineNotepad {
             noteItem.appendChild(actions);
             this.notesList.appendChild(noteItem);
         });
+        
+        this.updateNewNoteButtonState(); // Add this call
     }
     
     handleNoteListClick(e) {
@@ -286,6 +295,11 @@ class OnlineNotepad {
     }
 
     handleNewNote() {
+        if (this.notes.length >= this.maxNotes) {
+            console.warn("Maximum number of notes (12) reached.");
+            // Button is disabled, so this is an extra safeguard
+            return;
+        }
         this.saveActiveNote(); // Save current work
         
         const newNote = { id: Date.now(), title: "New Note", content: "", isRenamed: false };
@@ -300,6 +314,7 @@ class OnlineNotepad {
         this.editor.focus();
         
         this.toggleNotesSidebar(false); // Close mobile sidebar if open
+        // this.updateNewNoteButtonState(); // updateSidebarUI already calls this
     }
 
     handleSelectNote(noteId) {
@@ -347,6 +362,19 @@ class OnlineNotepad {
             this.handleSelectNote(nextActiveId); // Switch to new active note
         } else if (this.notes.length === 0) {
             this.handleNewNote(); // Create a new note if list is empty
+        }
+        
+        // this.updateNewNoteButtonState(); // updateSidebarUI already calls this
+    }
+    
+    updateNewNoteButtonState() {
+        const newNoteBtn = document.getElementById('newNoteBtn');
+        if (this.notes.length >= this.maxNotes) {
+            newNoteBtn.disabled = true;
+            newNoteBtn.title = "Maximum number of notes reached (12)";
+        } else {
+            newNoteBtn.disabled = false;
+            newNoteBtn.title = "New Note"; // Reset title
         }
     }
     
@@ -437,6 +465,14 @@ class OnlineNotepad {
         
         if (note) {
             try {
+                // Check note limit before importing
+                if (this.notes.length >= this.maxNotes) {
+                    console.warn("Note limit reached. Cannot import shared note.");
+                    // We can't use alert, so just log
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    return;
+                }
+
                 // Import the shared note as a new note
                 const content = decodeURIComponent(atob(note));
                 const title = this.getNoteTitle(content.replace(/<[^>]+>/g, ' ')); // Get title from plain text
@@ -463,14 +499,11 @@ class OnlineNotepad {
 
     async formatText(command, value = null) { // Added 'async'
         if (command === 'createLink') {
-            // This block will no longer be called, but is safe to leave
             const url = prompt("Enter the URL:", "https://");
             if (url) {
                 document.execCommand(command, false, url);
             }
         } else if (command === 'paste') {
-            // This block will no longer be called, but is safe to leave
-            // MODIFIED PASTE LOGIC
             // Use the modern Clipboard API
             if (navigator.clipboard && navigator.clipboard.readText) {
                 try {
@@ -481,7 +514,6 @@ class OnlineNotepad {
                 } catch (err) {
                     console.error('Failed to read clipboard contents: ', err);
                     // Fallback for browsers or permissions issues (e.g., in iframes)
-                    // This will likely not work in many modern browsers but is the original behavior.
                     document.execCommand(command, false, value);
                 }
             } else {
@@ -568,6 +600,11 @@ class OnlineNotepad {
     // --- File Operations ---
 
     uploadFile() {
+        if (this.notes.length >= this.maxNotes) {
+            console.warn("Cannot upload, maximum number of notes (12) reached.");
+            // We can't use alert, so just log.
+            return;
+        }
         // This will import the file as a *new note*
         document.getElementById('fileInput').click();
     }
@@ -575,6 +612,13 @@ class OnlineNotepad {
     async handleFileUpload(event) {
         const file = event.target.files[0];
         if (!file) return;
+
+        if (this.notes.length >= this.maxNotes) {
+            console.warn("Cannot upload, maximum number of notes (12) reached.");
+            // We can't use alert, so just log and return.
+            event.target.value = ''; // Reset file input
+            return;
+        }
 
         const reader = new FileReader();
         
