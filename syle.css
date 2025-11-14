@@ -79,7 +79,7 @@ body {
 }
 
 .note-item {
-    padding: 0.75rem;
+    padding: 0.6rem; /* MODIFIED: Was 0.75rem */
     background: var(--editor-bg);
     border-radius: 6px;
     cursor: pointer;
@@ -238,10 +238,10 @@ body {
 
 /* Buttons */
 .btn {
-    padding: 0.6rem 1.2rem;
+    padding: 0.5rem 1rem; /* MODIFIED: Was 0.6rem 1.2rem */
     border: none;
     border-radius: 6px;
-    font-size: 0.9rem;
+    font-size: 0.85rem; /* MODIFIED: Was 0.9rem */
     font-weight: 500;
     cursor: pointer;
     display: inline-flex;
@@ -352,8 +352,8 @@ body.dark-mode .ad-slot {
 }
 
 .toolbar-btn {
-    width: 28px; /* Smaller */
-    height: 28px; /* Smaller */
+    width: 26px; /* MODIFIED: Was 28px */
+    height: 26px; /* MODIFIED: Was 28px */
     border: 1px solid var(--border-color);
     background-color: var(--editor-bg);
     color: var(--text-color);
@@ -363,7 +363,7 @@ body.dark-mode .ad-slot {
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    font-size: 0.8rem; /* Smaller icon font */
+    font-size: 0.75rem; /* MODIFIED: Was 0.8rem */
 }
 
 .toolbar-btn:hover {
@@ -385,8 +385,8 @@ body.dark-mode .ad-slot {
     color: var(--text-color);
     font-family: inherit;
     cursor: pointer;
-    height: 28px; /* Smaller */
-    font-size: 0.8rem; /* Smaller */
+    height: 26px; /* MODIFIED: Was 28px */
+    font-size: 0.75rem; /* MODIFIED: Was 0.8rem */
 }
 
 .ml-auto {
@@ -411,8 +411,8 @@ body.dark-mode .ad-slot {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px; /* Smaller */
-    height: 28px; /* Smaller */
+    width: 26px; /* MODIFIED: Was 28px */
+    height: 26px; /* MODIFIED: Was 28px */
     border: 1px solid var(--border-color);
     background-color: var(--editor-bg);
     color: var(--text-color);
@@ -429,7 +429,7 @@ body.dark-mode .ad-slot {
 
 .toolbar-color-label i {
     pointer-events: none;
-    font-size: 0.8rem; /* Smaller */
+    font-size: 0.75rem; /* MODIFIED: Was 0.8rem */
 }
 
 .toolbar-color-picker {
@@ -444,12 +444,12 @@ body.dark-mode .ad-slot {
         
 .toolbar-hex-input {
     width: 70px; /* A bit wider to look good as a popover */
-    height: 28px; /* Match new button size */
+    height: 26px; /* MODIFIED: Was 28px */
     border: 1px solid var(--border-color);
     border-radius: 4px;
     /* REMOVED border-radius and margin adjustments */
     padding: 0 4px;
-    font-size: 0.75rem; /* Adjusted */
+    font-size: 0.7rem; /* MODIFIED: Was 0.75rem */
     background-color: var(--editor-bg);
     color: var(--text-color);
     /* REMOVED margin-left and margin-right */
