@@ -60,9 +60,12 @@ body {
 }
 
 .notes-sidebar h3 {
+    font-size: 1rem; /* MODIFIED: Reduced font size */
+    font-weight: 600; /* MODIFIED: Added weight */
     margin-bottom: 0.5rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--border-color);
+    text-align: center; /* MODIFIED: Centered text */
 }
 
 #newNoteBtn {
@@ -79,7 +82,7 @@ body {
 }
 
 .note-item {
-    padding: 0.6rem; /* MODIFIED: Was 0.75rem */
+    padding: 0.4rem 0.9rem; /* MODIFIED: Matched button vertical padding */
     background: var(--editor-bg);
     border-radius: 6px;
     cursor: pointer;
@@ -90,6 +93,7 @@ body {
 
 .note-item:hover {
     background: var(--hover-bg);
+    transform: translateY(-1px); /* MODIFIED: Added hover lift */
 }
 
 .note-item.active {
@@ -106,6 +110,7 @@ body {
 
 .note-item-title {
     font-weight: 500;
+    font-size: 0.8rem; /* MODIFIED: Matched button font size */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -238,10 +243,10 @@ body {
 
 /* Buttons */
 .btn {
-    padding: 0.5rem 1rem; /* MODIFIED: Was 0.6rem 1.2rem */
+    padding: 0.4rem 0.9rem; /* MODIFIED: Further reduction */
     border: none;
     border-radius: 6px;
-    font-size: 0.85rem; /* MODIFIED: Was 0.9rem */
+    font-size: 0.8rem; /* MODIFIED: Reduced from 0.85rem */
     font-weight: 500;
     cursor: pointer;
     display: inline-flex;
@@ -352,8 +357,8 @@ body.dark-mode .ad-slot {
 }
 
 .toolbar-btn {
-    width: 26px; /* MODIFIED: Was 28px */
-    height: 26px; /* MODIFIED: Was 28px */
+    width: 24px; /* MODIFIED: Was 26px */
+    height: 24px; /* MODIFIED: Was 26px */
     border: 1px solid var(--border-color);
     background-color: var(--editor-bg);
     color: var(--text-color);
@@ -363,7 +368,7 @@ body.dark-mode .ad-slot {
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    font-size: 0.75rem; /* MODIFIED: Was 0.8rem */
+    font-size: 0.7rem; /* MODIFIED: Was 0.75rem */
 }
 
 .toolbar-btn:hover {
@@ -378,16 +383,43 @@ body.dark-mode .ad-slot {
 }
 
 .toolbar-select {
-    padding: 0 0.5rem; /* Removed vertical padding */
+    padding: 0 0.5rem; /* Base padding */
     border: 1px solid var(--border-color);
     border-radius: 4px;
     background-color: var(--editor-bg);
     color: var(--text-color);
     font-family: inherit;
     cursor: pointer;
-    height: 26px; /* MODIFIED: Was 28px */
-    font-size: 0.75rem; /* MODIFIED: Was 0.8rem */
+    height: 24px; /* MODIFIED: Was 26px */
+    font-size: 0.7rem; /* MODIFIED: Was 0.75rem */
 }
+
+/* MODIFIED: Charming styles for Font Size select */
+#fontSizeSelect {
+    min-width: 60px; /* Give it a bit more space */
+    transition: all 0.2s ease;
+    -webkit-appearance: none; /* Remove default styling */
+    -moz-appearance: none;
+    appearance: none;
+    /* Custom arrow for light mode */
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27292.4%27%20height%3D%27292.4%27%3E%3Cpath%20fill%3D%27%23333333%27%20d%3D%27M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-13%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2013l128%20128c3.6%203.6%207.8%205.4%2013%205.4s9.4-1.8%2013-5.4l128-128c3.6-3.6%205.4-7.8%205.4-13%200-5-1.8-9.4-5.4-13z%27%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.4rem center; /* Adjusted position */
+    background-size: 0.6em auto; /* Adjusted size */
+    padding-right: 1.5rem; /* Space for arrow */
+}
+
+/* Custom arrow for dark mode */
+body.dark-mode #fontSizeSelect {
+     background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27292.4%27%20height%3D%27292.4%27%3E%3Cpath%20fill%3D%27%23e0e0e0%27%20d%3D%27M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-13%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2013l128%20128c3.6%203.6%207.8%205.4%2013%205.4s9.4-1.8%2013-5.4l128-128c3.6-3.6%205.4-7.8%205.4-13%200-5-1.8-9.4-5.4-13z%27%2F%3E%3C%2Fsvg%3E");
+}
+
+/* Hover effect for the font size select */
+#fontSizeSelect:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.3);
+}
+
 
 .ml-auto {
     margin-left: auto;
@@ -411,8 +443,8 @@ body.dark-mode .ad-slot {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 26px; /* MODIFIED: Was 28px */
-    height: 26px; /* MODIFIED: Was 28px */
+    width: 24px; /* MODIFIED: Was 26px */
+    height: 24px; /* MODIFIED: Was 26px */
     border: 1px solid var(--border-color);
     background-color: var(--editor-bg);
     color: var(--text-color);
@@ -429,7 +461,7 @@ body.dark-mode .ad-slot {
 
 .toolbar-color-label i {
     pointer-events: none;
-    font-size: 0.75rem; /* MODIFIED: Was 0.8rem */
+    font-size: 0.7rem; /* MODIFIED: Was 0.75rem */
 }
 
 .toolbar-color-picker {
@@ -444,7 +476,7 @@ body.dark-mode .ad-slot {
         
 .toolbar-hex-input {
     width: 70px; /* A bit wider to look good as a popover */
-    height: 26px; /* MODIFIED: Was 28px */
+    height: 24px; /* MODIFIED: Was 26px */
     border: 1px solid var(--border-color);
     border-radius: 4px;
     /* REMOVED border-radius and margin adjustments */
@@ -704,7 +736,7 @@ body.full-width .main-content {
 
     .btn {
         padding: 0.5rem 0.8rem;
-        font-size: 0.85rem;
+        font-size: 0.8rem; /* MODIFIED: was 0.85rem */
     }
 
     .logo h1 {
@@ -817,6 +849,25 @@ body.full-width .main-content {
 }
 
 /* Text Formatting Styles */
+/* MODIFIED: Added fixed sizes for headings */
+.editor h1 {
+    font-size: 2em; /* Approx 32px */
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.editor h2 {
+    font-size: 1.5em; /* Approx 24px */
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+}
+
+.editor h3 {
+    font-size: 1.17em; /* Approx 18.7px */
+    font-weight: 700;
+    margin-bottom: 0.7rem;
+}
+
 .editor b, .editor strong {
     font-weight: 700;
 }
