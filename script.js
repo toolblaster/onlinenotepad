@@ -39,6 +39,7 @@ class OnlineNotepad {
         document.getElementById('notesOverlay').addEventListener('click', () => this.toggleNotesSidebar(false));
 
         // Toolbar buttons
+        // ADDING LISTENERS BACK
         document.getElementById('undoBtn').addEventListener('click', () => this.formatText('undo'));
         document.getElementById('redoBtn').addEventListener('click', () => this.formatText('redo'));
         
@@ -58,8 +59,10 @@ class OnlineNotepad {
         document.getElementById('alignLeftBtn').addEventListener('click', () => this.formatText('justifyLeft'));
         document.getElementById('alignCenterBtn').addEventListener('click', () => this.formatText('justifyCenter'));
         document.getElementById('alignRightBtn').addEventListener('click', () => this.formatText('justifyRight'));
+        // END OF ADDED LISTENERS
         
         // Font selectors
+        document.getElementById('formatBlockSelect').addEventListener('change', (e) => this.formatText('formatBlock', e.target.value)); // NEW
         document.getElementById('fontFamilySelect').addEventListener('change', (e) => this.saveSettings());
         document.getElementById('fontSizeSelect').addEventListener('change', (e) => this.saveSettings());
 
@@ -127,14 +130,16 @@ class OnlineNotepad {
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey || e.metaKey) {
                 switch(e.key.toLowerCase()) {
+                    // ADDING SHORTCUTS BACK
                     case 'b': e.preventDefault(); this.formatText('bold'); break;
                     case 'i': e.preventDefault(); this.formatText('italic'); break;
                     case 'u': e.preventDefault(); this.formatText('underline'); break;
-                    case 's': e.preventDefault(); this.saveActiveNote(); break;
                     case 'z': e.preventDefault(); this.formatText('undo'); break;
                     case 'y': e.preventDefault(); this.formatText('redo'); break;
                     case 'x': e.preventDefault(); this.formatText('cut'); break;
                     case 'c': e.preventDefault(); this.formatText('copy'); break;
+                    // END OF ADDED SHORTCUTS
+                    case 's': e.preventDefault(); this.saveActiveNote(); break;
                 }
             }
         });
@@ -458,11 +463,13 @@ class OnlineNotepad {
 
     async formatText(command, value = null) { // Added 'async'
         if (command === 'createLink') {
+            // This block will no longer be called, but is safe to leave
             const url = prompt("Enter the URL:", "https://");
             if (url) {
                 document.execCommand(command, false, url);
             }
         } else if (command === 'paste') {
+            // This block will no longer be called, but is safe to leave
             // MODIFIED PASTE LOGIC
             // Use the modern Clipboard API
             if (navigator.clipboard && navigator.clipboard.readText) {
