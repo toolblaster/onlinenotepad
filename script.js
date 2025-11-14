@@ -10,7 +10,7 @@ class OnlineNotepad {
         this.notes = [];
         this.activeNoteId = null;
         this.saveTimeout = null;
-        this.maxNotes = 12; // Add max notes limit
+        this.maxNotes = 10; // Add max notes limit
         
         this.init();
     }
@@ -296,7 +296,7 @@ class OnlineNotepad {
 
     handleNewNote() {
         if (this.notes.length >= this.maxNotes) {
-            console.warn("Maximum number of notes (12) reached.");
+            console.warn("Maximum number of notes (10) reached.");
             // Button is disabled, so this is an extra safeguard
             return;
         }
@@ -371,7 +371,7 @@ class OnlineNotepad {
         const newNoteBtn = document.getElementById('newNoteBtn');
         if (this.notes.length >= this.maxNotes) {
             newNoteBtn.disabled = true;
-            newNoteBtn.title = "Maximum number of notes reached (12)";
+            newNoteBtn.title = "Maximum number of notes reached (10)";
         } else {
             newNoteBtn.disabled = false;
             newNoteBtn.title = "New Note"; // Reset title
@@ -601,7 +601,7 @@ class OnlineNotepad {
 
     uploadFile() {
         if (this.notes.length >= this.maxNotes) {
-            console.warn("Cannot upload, maximum number of notes (12) reached.");
+            console.warn("Cannot upload, maximum number of notes (10) reached.");
             // We can't use alert, so just log.
             return;
         }
@@ -614,7 +614,7 @@ class OnlineNotepad {
         if (!file) return;
 
         if (this.notes.length >= this.maxNotes) {
-            console.warn("Cannot upload, maximum number of notes (12) reached.");
+            console.warn("Cannot upload, maximum number of notes (10) reached.");
             // We can't use alert, so just log and return.
             event.target.value = ''; // Reset file input
             return;
