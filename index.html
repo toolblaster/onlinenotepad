@@ -18,10 +18,13 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://onlinenotepad.toolblaster.com/">
 
-    <!-- Favicons & App Icons (Crucial for Mobile Search Results) -->
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <!-- Favicons & App Icons (Updated for best Google/Mobile support) -->
+    <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg" />
+    <link rel="shortcut icon" href="favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Online Notepad" />
+    <link rel="manifest" href="favicon/site.webmanifest" />
 
     <!-- Performance Optimization: Preconnect to Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,14 +35,17 @@
     <meta property="og:url" content="https://onlinenotepad.toolblaster.com/">
     <meta property="og:title" content="Online Notepad - Free Secure Rich Text Editor">
     <meta property="og:description" content="Free online notepad with rich text, auto-save, and password-free privacy. Write, edit, and download notes securely in your browser. No login required.">
-    <meta property="og:image" content="https://onlinenotepad.toolblaster.com/og-image.jpg">
+    <!-- Updated OG Image to high-quality 512px icon -->
+    <meta property="og:image" content="https://onlinenotepad.toolblaster.com/favicon/web-app-manifest-512x512.png">
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
+    <!-- Changed to 'summary' because the image is square (1:1) -->
+    <meta property="twitter:card" content="summary">
     <meta property="twitter:url" content="https://onlinenotepad.toolblaster.com/">
     <meta property="twitter:title" content="Online Notepad - Free Secure Rich Text Editor">
     <meta property="twitter:description" content="Free online notepad with rich text, auto-save, and password-free privacy. Write, edit, and download notes securely in your browser. No login required.">
-    <meta property="twitter:image" content="https://onlinenotepad.toolblaster.com/twitter-image.jpg">
+    <!-- Updated Twitter Image to high-quality 512px icon -->
+    <meta property="twitter:image" content="https://onlinenotepad.toolblaster.com/favicon/web-app-manifest-512x512.png">
 
     <!-- JSON-LD Schema for Google Search -->
     <script type="application/ld+json">
@@ -103,6 +109,16 @@
             }
           }
         ]
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Online Notepad",
+          "item": "https://onlinenotepad.toolblaster.com/"
+        }]
       }
     ]
     </script>
