@@ -60,12 +60,12 @@ body {
 }
 
 .notes-sidebar h3 {
-    font-size: 1rem; /* MODIFIED: Reduced font size */
-    font-weight: 600; /* MODIFIED: Added weight */
+    font-size: 1rem;
+    font-weight: 600;
     margin-bottom: 0.5rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--border-color);
-    text-align: center; /* MODIFIED: Centered text */
+    text-align: center;
 }
 
 #newNoteBtn {
@@ -82,7 +82,7 @@ body {
 }
 
 .note-item {
-    padding: 0.4rem 0.9rem; /* MODIFIED: Matched button vertical padding */
+    padding: 0.4rem 0.9rem;
     background: var(--editor-bg);
     border-radius: 6px;
     cursor: pointer;
@@ -93,7 +93,7 @@ body {
 
 .note-item:hover {
     background: var(--hover-bg);
-    transform: translateY(-1px); /* MODIFIED: Added hover lift */
+    transform: translateY(-1px);
 }
 
 .note-item.active {
@@ -110,13 +110,13 @@ body {
 
 .note-item-title {
     font-weight: 500;
-    font-size: 0.8rem; /* MODIFIED: Matched button font size */
+    font-size: 0.8rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     padding-right: 45px; /* Space for action buttons */
     transition: opacity 0.2s ease;
-    line-height: 1.4; /* Added for uniformity */
+    line-height: 1.4;
 }
 
 .note-item-title.editing {
@@ -131,7 +131,7 @@ body {
     outline: none;
     color: var(--text-color);
     background-color: var(--editor-bg);
-    line-height: 1.4; /* Added for uniformity */
+    line-height: 1.4;
 }
 
 .note-item-rename.editing {
@@ -228,8 +228,8 @@ body {
 
 .btn-toggle-notes {
     display: none; /* Hidden on desktop */
-    width: 32px; /* Smaller */
-    height: 32px; /* Smaller */
+    width: 32px;
+    height: 32px;
     border: 1px solid var(--border-color);
     background-color: var(--editor-bg);
     color: var(--text-color);
@@ -238,15 +238,15 @@ body {
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    font-size: 0.9rem; /* Smaller */
+    font-size: 0.9rem;
 }
 
 /* Buttons */
 .btn {
-    padding: 0.4rem 0.9rem; /* MODIFIED: Further reduction */
+    padding: 0.4rem 0.9rem;
     border: none;
     border-radius: 6px;
-    font-size: 0.8rem; /* MODIFIED: Reduced from 0.85rem */
+    font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
     display: inline-flex;
@@ -296,15 +296,11 @@ body.dark-mode .ad-slot {
 }
 
 .ad-leaderboard-desktop {
-    width: 90%;
-    max-width: 728px;
-    height: 90px;
-    margin: 1rem auto;
-    flex-shrink: 0;
+    display: none;
 }
 
 .ad-leaderboard-mobile {
-    display: none; /* Hidden by default */
+    display: none;
 }
 
 .ad-anchor-bottom {
@@ -336,10 +332,10 @@ body.dark-mode .ad-slot {
 .toolbar {
     display: flex;
     align-items: center;
-    padding: 0.5rem 1rem; /* Reduced padding */
+    padding: 0.5rem 1rem;
     background-color: var(--toolbar-bg);
     border-bottom: 1px solid var(--border-color);
-    gap: 0.5rem; /* Reduced gap */
+    gap: 0.5rem;
     flex-wrap: wrap;
     flex-shrink: 0;
 }
@@ -357,8 +353,8 @@ body.dark-mode .ad-slot {
 }
 
 .toolbar-btn {
-    width: 24px; /* MODIFIED: Was 26px */
-    height: 24px; /* MODIFIED: Was 26px */
+    width: 24px;
+    height: 24px;
     border: 1px solid var(--border-color);
     background-color: var(--editor-bg);
     color: var(--text-color);
@@ -368,7 +364,7 @@ body.dark-mode .ad-slot {
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    font-size: 0.7rem; /* MODIFIED: Was 0.75rem */
+    font-size: 0.7rem;
 }
 
 .toolbar-btn:hover {
@@ -390,11 +386,11 @@ body.dark-mode .ad-slot {
     color: var(--text-color);
     font-family: inherit;
     cursor: pointer;
-    height: 24px; /* MODIFIED: Was 26px */
-    font-size: 0.7rem; /* MODIFIED: Was 0.75rem */
+    height: 24px;
+    font-size: 0.7rem;
 }
 
-/* MODIFIED: Charming styles for Font Size select */
+/* Charming styles for Font Size select */
 #fontSizeSelect {
     min-width: 60px; /* Give it a bit more space */
     transition: all 0.2s ease;
@@ -434,7 +430,6 @@ body.dark-mode #fontSizeSelect {
     display: flex;
     align-items: center;
     position: relative; /* Make it a positioning context */
-    /* Add a gap between the two color tools */
     margin-right: 4px;
 }
 
@@ -443,13 +438,12 @@ body.dark-mode #fontSizeSelect {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px; /* MODIFIED: Was 26px */
-    height: 24px; /* MODIFIED: Was 26px */
+    width: 24px;
+    height: 24px;
     border: 1px solid var(--border-color);
     background-color: var(--editor-bg);
     color: var(--text-color);
     border-radius: 4px;
-    /* REMOVED border-radius adjustments */
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -461,7 +455,7 @@ body.dark-mode #fontSizeSelect {
 
 .toolbar-color-label i {
     pointer-events: none;
-    font-size: 0.7rem; /* MODIFIED: Was 0.75rem */
+    font-size: 0.7rem;
 }
 
 .toolbar-color-picker {
@@ -476,17 +470,15 @@ body.dark-mode #fontSizeSelect {
         
 .toolbar-hex-input {
     width: 70px; /* A bit wider to look good as a popover */
-    height: 24px; /* MODIFIED: Was 26px */
+    height: 24px;
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    /* REMOVED border-radius and margin adjustments */
     padding: 0 4px;
-    font-size: 0.7rem; /* MODIFIED: Was 0.75rem */
+    font-size: 0.7rem;
     background-color: var(--editor-bg);
     color: var(--text-color);
-    /* REMOVED margin-left and margin-right */
 
-    /* NEW POPOVER STYLES */
+    /* POPOVER STYLES */
     position: absolute;
     display: none; /* Hide by default */
     top: 0;
@@ -683,25 +675,35 @@ body.full-width .main-content {
     }
 
     .ad-leaderboard-desktop {
-        display: none; /* Hide desktop ad */
+        display: none;
     }
 
     .ad-leaderboard-mobile {
-        display: flex; /* Show mobile ad */
-        width: 95%;
-        max-width: 320px;
-        height: 50px;
-        margin: 0.5rem auto;
+        display: none;
     }
 
     .header {
         flex-direction: row; /* Keep header as row */
-        gap: 1rem;
-        padding: 1rem;
+        gap: 0.5rem; /* Reduced gap from 1rem */
+        padding: 0.75rem; /* Reduced padding from 1rem */
     }
     
     .header .logo {
         flex: 1;
+    }
+
+    /* Logo Compact Styles for Mobile */
+    .logo {
+        gap: 0.5rem;
+    }
+
+    .logo h1 {
+        font-size: 1.1rem; /* Smaller text */
+        line-height: 1.2;
+    }
+
+    .logo i {
+        font-size: 1.2rem;
     }
 
     .header-actions {
@@ -736,7 +738,7 @@ body.full-width .main-content {
 
     .btn {
         padding: 0.5rem 0.8rem;
-        font-size: 0.8rem; /* MODIFIED: was 0.85rem */
+        font-size: 0.8rem;
     }
 
     .logo h1 {
@@ -745,6 +747,20 @@ body.full-width .main-content {
 }
 
 @media (max-width: 480px) {
+    /* More Compact Logo for Small Mobile */
+    .logo {
+        gap: 0.4rem;
+    }
+
+    .logo i {
+        font-size: 1.1rem;
+    }
+
+    .logo h1 {
+        font-size: 1rem;
+        white-space: nowrap;
+    }
+
     .header-actions {
         display: flex;
         flex-direction: row;
@@ -849,7 +865,7 @@ body.full-width .main-content {
 }
 
 /* Text Formatting Styles */
-/* MODIFIED: Added fixed sizes for headings */
+/* Fixed sizes for headings */
 .editor h1 {
     font-size: 2em; /* Approx 32px */
     font-weight: 700;
