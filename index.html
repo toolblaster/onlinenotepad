@@ -9,9 +9,23 @@
     <meta name="description" content="Free, private online notepad with rich text formatting. Features include auto-save, dark mode, font customization, file upload/download, and note sharing.">
     <meta name="keywords" content="online notepad, rich text editor, free note taking app, secure notes, dark mode, text formatting, font styles, text color, save to local storage, print notes, upload text file">
     <meta name="robots" content="index, follow">
+    <!-- Google Search Console Verification (Replace CONTENT with your code) -->
+    <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE_HERE" />
+    
+    <!-- Mobile Theme Color -->
+    <meta name="theme-color" content="#4CAF50">
     
     <!-- Canonical URL -->
     <link rel="canonical" href="https://onlinenotepad.toolblaster.com/">
+
+    <!-- Favicons & App Icons (Crucial for Mobile Search Results) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+    <!-- Performance Optimization: Preconnect to Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -29,46 +43,78 @@
 
     <!-- JSON-LD Schema for Google Search -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Online Notepad",
-      "alternateName": ["Free Online Notepad", "Rich Text Editor", "ToolBlaster Notepad"],
-      "url": "https://onlinenotepad.toolblaster.com/",
-      "applicationCategory": "ProductivityApplication",
-      "operatingSystem": "Any",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
+    [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Online Notepad",
+        "alternateName": ["Free Online Notepad", "Rich Text Editor", "ToolBlaster Notepad"],
+        "url": "https://onlinenotepad.toolblaster.com/",
+        "applicationCategory": "ProductivityApplication",
+        "operatingSystem": "Any",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "description": "A comprehensive, free online notepad for writing and editing text directly in your browser. No login required.",
+        "featureList": [
+          "Rich text formatting (Bold, Italic, Underline, Strikethrough)",
+          "Font family and size customization",
+          "Text color and background highlighting",
+          "Bulleted and Numbered lists",
+          "Text alignment (Left, Center, Right)",
+          "Undo and Redo functionality",
+          "Dark Mode interface",
+          "Local browser storage auto-save",
+          "File Upload (.txt, .html) and Download",
+          "Print notes directly to printer or PDF",
+          "Shareable links for notes"
+        ],
+        "browserRequirements": "Requires JavaScript. Works in Chrome, Firefox, Safari, Edge, and modern mobile browsers.",
+        "softwareVersion": "1.0",
+        "author": {
+          "@type": "Organization",
+          "name": "ToolBlaster Team",
+          "url": "https://onlinenotepad.toolblaster.com"
+        },
+        "potentialAction": {
+          "@type": "CreateAction",
+          "target": "https://onlinenotepad.toolblaster.com/",
+          "name": "Create a new note"
+        }
       },
-      "description": "A comprehensive, free online notepad for writing and editing text directly in your browser. No login required.",
-      "featureList": [
-        "Rich text formatting (Bold, Italic, Underline, Strikethrough)",
-        "Font family and size customization",
-        "Text color and background highlighting",
-        "Bulleted and Numbered lists",
-        "Text alignment (Left, Center, Right)",
-        "Undo and Redo functionality",
-        "Dark Mode interface",
-        "Local browser storage auto-save",
-        "File Upload (.txt, .html) and Download",
-        "Print notes directly to printer or PDF",
-        "Shareable links for notes"
-      ],
-      "browserRequirements": "Requires JavaScript. Works in Chrome, Firefox, Safari, Edge, and modern mobile browsers.",
-      "softwareVersion": "1.0",
-      "author": {
-        "@type": "Organization",
-        "name": "ToolBlaster Team",
-        "url": "https://onlinenotepad.toolblaster.com"
-      },
-      "potentialAction": {
-        "@type": "CreateAction",
-        "target": "https://onlinenotepad.toolblaster.com/",
-        "name": "Create a new note"
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is this online notepad free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, this online notepad is 100% free to use with no hidden costs or subscriptions."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Are my notes secure?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Your notes are stored locally in your browser's storage. Nothing is sent to a server unless you explicitly use the Share feature."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I use this notepad in Dark Mode?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, simply toggle the Dark Mode button in the toolbar to switch to a dark theme for easier reading at night."
+            }
+          }
+        ]
       }
-    }
+    ]
     </script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -83,7 +129,7 @@
     <div class="page-wrapper">
         <aside id="notes-sidebar" class="notes-sidebar">
             <h3>My Notes</h3>
-            <button id="newNoteBtn" class="btn btn-primary">
+            <button id="newNoteBtn" class="btn btn-primary" aria-label="Create New Note">
                 <i class="fas fa-plus"></i> New Note
             </button>
             <div id="notesList" class="notes-list">
@@ -96,23 +142,23 @@
                 <!-- Header -->
                 <header class="header">
                     <div class="logo">
-                        <button id="toggleNotesBtn" class="btn-toggle-notes" title="Toggle Notes">
+                        <button id="toggleNotesBtn" class="btn-toggle-notes" title="Toggle Notes" aria-label="Toggle Sidebar">
                             <i class="fas fa-bars"></i>
                         </button>
                         <i class="fas fa-file-alt"></i>
                         <h1>Online Notepad</h1>
                     </div>
                     <div class="header-actions">
-                        <button id="uploadBtn" class="btn btn-secondary" title="Upload File">
+                        <button id="uploadBtn" class="btn btn-secondary" title="Upload File" aria-label="Upload Text File">
                             <i class="fas fa-upload"></i> Upload
                         </button>
-                        <button id="downloadBtn" class="btn btn-secondary" title="Download File">
+                        <button id="downloadBtn" class="btn btn-secondary" title="Download File" aria-label="Download Text File">
                             <i class="fas fa-download"></i> Download
                         </button>
-                        <button id="duplicateBtn" class="btn btn-secondary" title="Duplicate Note">
+                        <button id="duplicateBtn" class="btn btn-secondary" title="Duplicate Note" aria-label="Duplicate Current Note">
                             <i class="fas fa-copy"></i> Duplicate
                         </button>
-                        <button id="shareBtn" class="btn btn-secondary" title="Share Note">
+                        <button id="shareBtn" class="btn btn-secondary" title="Share Note" aria-label="Share Note">
                             <i class="fas fa-share-alt"></i> Share
                         </button>
                     </div>
@@ -127,79 +173,78 @@
                 </div>
 
                 <!-- Toolbar -->
-                <div class="toolbar">
+                <div class="toolbar" role="toolbar" aria-label="Text Formatting Toolbar">
                     <!-- Toolbar groups... -->
-                    <!-- ADDING BUTTONS BACK -->
                     <div class="toolbar-group">
-                        <button id="undoBtn" class="toolbar-btn" title="Undo (Ctrl+Z)">
+                        <button id="undoBtn" class="toolbar-btn" title="Undo (Ctrl+Z)" aria-label="Undo">
                             <i class="fas fa-undo"></i>
                         </button>
-                        <button id="redoBtn" class="toolbar-btn" title="Redo (Ctrl+Y)">
+                        <button id="redoBtn" class="toolbar-btn" title="Redo (Ctrl+Y)" aria-label="Redo">
                             <i class="fas fa-redo"></i>
                         </button>
                     </div>
 
                     <div class="toolbar-group">
-                        <button id="cutBtn" class="toolbar-btn" title="Cut (Ctrl+X)">
+                        <button id="cutBtn" class="toolbar-btn" title="Cut (Ctrl+X)" aria-label="Cut">
                             <i class="fas fa-cut"></i>
                         </button>
-                        <button id="copyBtn" class="toolbar-btn" title="Copy (Ctrl+C)">
+                        <button id="copyBtn" class="toolbar-btn" title="Copy (Ctrl+C)" aria-label="Copy">
                             <i class="fas fa-copy"></i>
                         </button>
-                        <button id="pasteBtn" class="toolbar-btn" title="Paste (Ctrl+V)">
+                        <button id="pasteBtn" class="toolbar-btn" title="Paste (Ctrl+V)" aria-label="Paste">
                             <i class="fas fa-paste"></i>
                         </button>
                     </div>
 
                     <div class="toolbar-group">
-                        <button id="boldBtn" class="toolbar-btn" title="Bold (Ctrl+B)">
+                        <button id="boldBtn" class="toolbar-btn" title="Bold (Ctrl+B)" aria-label="Bold">
                             <i class="fas fa-bold"></i>
                         </button>
-                        <button id="italicBtn" class="toolbar-btn" title="Italic (Ctrl+I)">
+                        <button id="italicBtn" class="toolbar-btn" title="Italic (Ctrl+I)" aria-label="Italic">
                             <i class="fas fa-italic"></i>
                         </button>
-                        <button id="underlineBtn" class="toolbar-btn" title="Underline (Ctrl+U)">
+                        <button id="underlineBtn" class="toolbar-btn" title="Underline (Ctrl+U)" aria-label="Underline">
                             <i class="fas fa-underline"></i>
                         </button>
-                        <button id="strikeBtn" class="toolbar-btn" title="Strikethrough">
+                        <button id="strikeBtn" class="toolbar-btn" title="Strikethrough" aria-label="Strikethrough">
                             <i class="fas fa-strikethrough"></i>
                         </button>
                     </div>
                     
                     <div class="toolbar-group">
-                        <button id="linkBtn" class="toolbar-btn" title="Insert Link">
+                        <button id="linkBtn" class="toolbar-btn" title="Insert Link" aria-label="Insert Link">
                             <i class="fas fa-link"></i>
                         </button>
-                        <button id="ulBtn" class="toolbar-btn" title="Bullet List">
+                        <button id="ulBtn" class="toolbar-btn" title="Bullet List" aria-label="Bulleted List">
                             <i class="fas fa-list-ul"></i>
                         </button>
-                        <button id="olBtn" class="toolbar-btn" title="Numbered List">
+                        <button id="olBtn" class="toolbar-btn" title="Numbered List" aria-label="Numbered List">
                             <i class="fas fa-list-ol"></i>
                         </button>
                     </div>
 
                     <div class="toolbar-group">
-                        <button id="alignLeftBtn" class="toolbar-btn" title="Align Left">
+                        <button id="alignLeftBtn" class="toolbar-btn" title="Align Left" aria-label="Align Left">
                             <i class="fas fa-align-left"></i>
                         </button>
-                        <button id="alignCenterBtn" class="toolbar-btn" title="Align Center">
+                        <button id="alignCenterBtn" class="toolbar-btn" title="Align Center" aria-label="Align Center">
                             <i class="fas fa-align-center"></i>
                         </button>
-                        <button id="alignRightBtn" class="toolbar-btn" title="Align Right">
+                        <button id="alignRightBtn" class="toolbar-btn" title="Align Right" aria-label="Align Right">
                             <i class="fas fa-align-right"></i>
                         </button>
                     </div>
                     
                     <div class="toolbar-group">
                          <!-- NEW DROPDOWN -->
-                         <select id="formatBlockSelect" class="toolbar-select" title="Text Style">
+                         <select id="formatBlockSelect" class="toolbar-select" title="Text Style" aria-label="Text Style">
                             <option value="<p>" selected>Normal Text</option>
                             <option value="<h1>">Heading 1</option>
                             <option value="<h2>">Heading 2</option>
                             <option value="<h3>">Heading 3</option>
                         </select>
                          <!-- EXISTING DROPDOWNS -->
-                         <select id="fontFamilySelect" class="toolbar-select">
+                         <select id="fontFamilySelect" class="toolbar-select" aria-label="Font Family">
                             <option value="Inter, -apple-system, sans-serif" selected>Inter</option>
                             <option value="Arial, sans-serif">Arial</option>
                             <option value="'Times New Roman', serif">Times New Roman</option>
@@ -207,7 +252,7 @@
                             <option value="'Georgia', serif">Georgia</option>
                             <option value="'Verdana', sans-serif">Verdana</option>
                         </select>
-                        <select id="fontSizeSelect" class="toolbar-select">
+                        <select id="fontSizeSelect" class="toolbar-select" aria-label="Font Size">
                             <option value="12px">12px</option>
                             <option value="14px">14px</option>
                             <option value="16px" selected>16px</option>
@@ -221,32 +266,32 @@
 
                     <div class="toolbar-group color-pickers">
                         <div class="color-tool">
-                            <label for="fontColorPicker" class="toolbar-color-label" title="Font Color">
+                            <label for="fontColorPicker" class="toolbar-color-label" title="Font Color" aria-label="Font Color">
                                 <i class="fas fa-font"></i>
                                 <input type="color" id="fontColorPicker" class="toolbar-color-picker" value="#000000">
                             </label>
-                            <input type="text" id="fontColorHex" class="toolbar-hex-input" maxlength="7" placeholder="#000000">
+                            <input type="text" id="fontColorHex" class="toolbar-hex-input" maxlength="7" placeholder="#000000" aria-label="Font Color Hex">
                         </div>
                         <div class="color-tool">
-                            <label for="highlightColorPicker" class="toolbar-color-label" title="Highlight Color">
+                            <label for="highlightColorPicker" class="toolbar-color-label" title="Highlight Color" aria-label="Highlight Color">
                                 <i class="fas fa-highlighter"></i>
                                 <input type="color" id="highlightColorPicker" class="toolbar-color-picker" value="#FFFF00">
                             </label>
-                            <input type="text" id="highlightColorHex" class="toolbar-hex-input" maxlength="7" placeholder="#FFFF00">
+                            <input type="text" id="highlightColorHex" class="toolbar-hex-input" maxlength="7" placeholder="#FFFF00" aria-label="Highlight Color Hex">
                         </div>
                     </div>
 
                     <div class="toolbar-group ml-auto">
-                        <button id="printBtn" class="toolbar-btn" title="Print Note">
+                        <button id="printBtn" class="toolbar-btn" title="Print Note" aria-label="Print Note">
                             <i class="fas fa-print"></i>
                         </button>
-                        <button id="clearBtn" class="toolbar-btn" title="Clear All">
+                        <button id="clearBtn" class="toolbar-btn" title="Clear All" aria-label="Clear All Text">
                             <i class="fas fa-eraser"></i>
                         </button>
-                        <button id="fullWidthBtn" class="toolbar-btn" title="Toggle Full Width">
+                        <button id="fullWidthBtn" class="toolbar-btn" title="Toggle Full Width" aria-label="Toggle Full Width Mode">
                             <i class="fas fa-expand-arrows-alt"></i>
                         </button>
-                        <button id="darkModeBtn" class="toolbar-btn" title="Toggle Dark Mode">
+                        <button id="darkModeBtn" class="toolbar-btn" title="Toggle Dark Mode" aria-label="Toggle Dark Mode">
                             <i class="fas fa-moon"></i>
                         </button>
                     </div>
@@ -254,7 +299,7 @@
 
                 <!-- Editor Area -->
                 <div class="editor-container">
-                    <div id="editor" class="editor" contenteditable="true" spellcheck="true">
+                    <div id="editor" class="editor" contenteditable="true" spellcheck="true" role="textbox" aria-multiline="true" aria-label="Rich Text Editor">
                     </div>
                 </div>
 
@@ -269,6 +314,28 @@
                     </div>
                 </div>
             </div>
+
+            <!-- SEO Content Section (Visible only when scrolling down) -->
+            <section class="seo-content">
+                <h2>Free Online Notepad & Rich Text Editor</h2>
+                <p>Welcome to <strong>Online Notepad</strong>, your free, secure, and easy-to-use web-based text editor. Whether you need to jot down quick thoughts, draft a blog post, or manage your daily tasks, our tool offers a distraction-free environment with powerful rich text formatting capabilities.</p>
+                
+                <h3>Key Features</h3>
+                <ul>
+                    <li><strong>Rich Text Formatting:</strong> Customize your notes with bold, italics, lists, headings, and more.</li>
+                    <li><strong>Privacy First:</strong> Your notes are stored locally in your browser. We do not track your content or store it on our servers.</li>
+                    <li><strong>Dark Mode:</strong> Reduce eye strain with a built-in dark theme, perfect for late-night writing.</li>
+                    <li><strong>Auto-Save:</strong> Never lose your work again. Your text is saved automatically as you type.</li>
+                    <li><strong>Export & Share:</strong> Download your notes as text files or create a shareable link instantly.</li>
+                </ul>
+
+                <h3>How to Use</h3>
+                <p>Simply start typing in the main editor area. Use the toolbar at the top to format your text. Your progress is saved automatically to your browser's local storage, so you can close the tab and come back later to pick up right where you left off.</p>
+
+                <h3>Frequently Asked Questions</h3>
+                <p><strong>Is it really free?</strong><br>Yes, Online Notepad is completely free to use with no hidden fees or subscriptions.</p>
+                <p><strong>Do I need to create an account?</strong><br>No, you can start writing immediately without signing up.</p>
+            </section>
         </main>
     </div>
 
@@ -281,14 +348,14 @@
     <input type="file" id="fileInput" accept=".txt,.html,.htm" style="display: none;">
 
     <!-- Modal for Share -->
-    <div id="shareModal" class="modal">
+    <div id="shareModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Share Your Note</h2>
+            <span class="close" aria-label="Close Share Modal">&times;</span>
+            <h2 id="shareModalTitle">Share Your Note</h2>
             <p>Copy the link below to share your note:</p>
             <div class="share-input-group">
-                <input type="text" id="shareLink" readonly>
-                <button id="copyLinkBtn" class="btn btn-primary">
+                <input type="text" id="shareLink" readonly aria-label="Shareable Link">
+                <button id="copyLinkBtn" class="btn btn-primary" aria-label="Copy Link to Clipboard">
                     <i class="fas fa-copy"></i> Copy
                 </button>
             </div>
