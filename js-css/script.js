@@ -40,7 +40,6 @@ class OnlineNotepad {
         document.getElementById('notesOverlay').addEventListener('click', () => this.toggleNotesSidebar(false));
 
         // Toolbar buttons
-        // ADDING LISTENERS BACK
         document.getElementById('undoBtn').addEventListener('click', () => this.formatText('undo'));
         document.getElementById('redoBtn').addEventListener('click', () => this.formatText('redo'));
         
@@ -60,10 +59,9 @@ class OnlineNotepad {
         document.getElementById('alignLeftBtn').addEventListener('click', () => this.formatText('justifyLeft'));
         document.getElementById('alignCenterBtn').addEventListener('click', () => this.formatText('justifyCenter'));
         document.getElementById('alignRightBtn').addEventListener('click', () => this.formatText('justifyRight'));
-        // END OF ADDED LISTENERS
         
         // Font selectors
-        document.getElementById('formatBlockSelect').addEventListener('change', (e) => this.formatText('formatBlock', e.target.value)); // NEW
+        document.getElementById('formatBlockSelect').addEventListener('change', (e) => this.formatText('formatBlock', e.target.value));
         document.getElementById('fontFamilySelect').addEventListener('change', (e) => this.saveSettings());
         document.getElementById('fontSizeSelect').addEventListener('change', (e) => this.saveSettings());
 
@@ -131,7 +129,6 @@ class OnlineNotepad {
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey || e.metaKey) {
                 switch(e.key.toLowerCase()) {
-                    // ADDING SHORTCUTS BACK
                     case 'b': e.preventDefault(); this.formatText('bold'); break;
                     case 'i': e.preventDefault(); this.formatText('italic'); break;
                     case 'u': e.preventDefault(); this.formatText('underline'); break;
@@ -139,7 +136,6 @@ class OnlineNotepad {
                     case 'y': e.preventDefault(); this.formatText('redo'); break;
                     case 'x': e.preventDefault(); this.formatText('cut'); break;
                     case 'c': e.preventDefault(); this.formatText('copy'); break;
-                    // END OF ADDED SHORTCUTS
                     case 's': e.preventDefault(); this.saveActiveNote(); break;
                 }
             }
@@ -161,7 +157,8 @@ class OnlineNotepad {
         
         if (this.notes.length === 0) {
             // Create a default note if none exist
-            const newNote = { id: Date.now(), title: "My First Note", content: "Welcome to your new notepad!", isRenamed: false };
+            // CHANGED: Initial content is now empty string to trigger CSS placeholder
+            const newNote = { id: Date.now(), title: "New Note", content: "", isRenamed: false };
             this.notes.push(newNote);
             this.activeNoteId = newNote.id;
             this.saveNotes();
