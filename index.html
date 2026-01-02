@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- SEO Meta Tags -->
-    <title>Online Notepad - Rich Text Editor & Note Taker</title>
-    <meta name="description" content="Free, private online notepad with rich text formatting. Features include auto-save, dark mode, font customization, file upload/download, and note sharing.">
+    <title>Online Notepad - Free Secure Rich Text Editor</title>
+    <meta name="description" content="Free online notepad with rich text, auto-save, and password-free privacy. Write, edit, and download notes securely in your browser. No login required.">
     <meta name="keywords" content="online notepad, rich text editor, free note taking app, secure notes, dark mode, text formatting, font styles, text color, save to local storage, print notes, upload text file">
     <meta name="robots" content="index, follow">
     <!-- Google Search Console Verification (Replace CONTENT with your code) -->
@@ -30,15 +30,15 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://onlinenotepad.toolblaster.com/">
-    <meta property="og:title" content="Online Notepad - Rich Text Editor & Note Taker">
-    <meta property="og:description" content="Free, private online notepad with rich text formatting. Features include auto-save, dark mode, font customization, file upload/download, and note sharing.">
+    <meta property="og:title" content="Online Notepad - Free Secure Rich Text Editor">
+    <meta property="og:description" content="Free online notepad with rich text, auto-save, and password-free privacy. Write, edit, and download notes securely in your browser. No login required.">
     <meta property="og:image" content="https://onlinenotepad.toolblaster.com/og-image.jpg">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://onlinenotepad.toolblaster.com/">
-    <meta property="twitter:title" content="Online Notepad - Rich Text Editor & Note Taker">
-    <meta property="twitter:description" content="Free, private online notepad with rich text formatting. Features include auto-save, dark mode, font customization, file upload/download, and note sharing.">
+    <meta property="twitter:title" content="Online Notepad - Free Secure Rich Text Editor">
+    <meta property="twitter:description" content="Free online notepad with rich text, auto-save, and password-free privacy. Write, edit, and download notes securely in your browser. No login required.">
     <meta property="twitter:image" content="https://onlinenotepad.toolblaster.com/twitter-image.jpg">
 
     <!-- JSON-LD Schema for Google Search -->
@@ -57,31 +57,21 @@
           "price": "0",
           "priceCurrency": "USD"
         },
-        "description": "A comprehensive, free online notepad for writing and editing text directly in your browser. No login required.",
+        "description": "A comprehensive, free online notepad for writing and editing text directly in your browser. Features auto-save and local privacy.",
         "featureList": [
-          "Rich text formatting (Bold, Italic, Underline, Strikethrough)",
-          "Font family and size customization",
-          "Text color and background highlighting",
-          "Bulleted and Numbered lists",
-          "Text alignment (Left, Center, Right)",
-          "Undo and Redo functionality",
-          "Dark Mode interface",
+          "Rich text formatting (Bold, Italic, Underline)",
+          "Font customization",
           "Local browser storage auto-save",
-          "File Upload (.txt, .html) and Download",
-          "Print notes directly to printer or PDF",
-          "Shareable links for notes"
+          "Dark Mode interface",
+          "File Upload/Download (.txt, .html)",
+          "Print to PDF"
         ],
-        "browserRequirements": "Requires JavaScript. Works in Chrome, Firefox, Safari, Edge, and modern mobile browsers.",
-        "softwareVersion": "1.0",
+        "browserRequirements": "Requires JavaScript. Works in Chrome, Firefox, Safari, Edge.",
+        "softwareVersion": "1.2",
         "author": {
           "@type": "Organization",
           "name": "ToolBlaster Team",
           "url": "https://onlinenotepad.toolblaster.com"
-        },
-        "potentialAction": {
-          "@type": "CreateAction",
-          "target": "https://onlinenotepad.toolblaster.com/",
-          "name": "Create a new note"
         }
       },
       {
@@ -93,7 +83,7 @@
             "name": "Is this online notepad free?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes, this online notepad is 100% free to use with no hidden costs or subscriptions."
+              "text": "Yes, this online notepad is 100% free with no hidden costs, subscriptions, or login requirements."
             }
           },
           {
@@ -101,15 +91,15 @@
             "name": "Are my notes secure?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. Your notes are stored locally in your browser's storage. Nothing is sent to a server unless you explicitly use the Share feature."
+              "text": "Yes. Your notes are stored locally in your browser's Local Storage. We do not transmit or store your text on our servers."
             }
           },
           {
             "@type": "Question",
-            "name": "Can I use this notepad in Dark Mode?",
+            "name": "How do I save my notes?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes, simply toggle the Dark Mode button in the toolbar to switch to a dark theme for easier reading at night."
+              "text": "Saving is automatic. The editor triggers an auto-save to your browser's memory every time you stop typing."
             }
           }
         ]
@@ -236,14 +226,12 @@
                     </div>
                     
                     <div class="toolbar-group">
-                         <!-- NEW DROPDOWN -->
                          <select id="formatBlockSelect" class="toolbar-select" title="Text Style" aria-label="Text Style">
                             <option value="<p>" selected>Normal Text</option>
                             <option value="<h1>">Heading 1</option>
                             <option value="<h2>">Heading 2</option>
                             <option value="<h3>">Heading 3</option>
                         </select>
-                         <!-- EXISTING DROPDOWNS -->
                          <select id="fontFamilySelect" class="toolbar-select" aria-label="Font Family">
                             <option value="Inter, -apple-system, sans-serif" selected>Inter</option>
                             <option value="Arial, sans-serif">Arial</option>
@@ -317,24 +305,53 @@
 
             <!-- SEO Content Section (Visible only when scrolling down) -->
             <section class="seo-content">
-                <h2>Free Online Notepad & Rich Text Editor</h2>
-                <p>Welcome to <strong>Online Notepad</strong>, your free, secure, and easy-to-use web-based text editor. Whether you need to jot down quick thoughts, draft a blog post, or manage your daily tasks, our tool offers a distraction-free environment with powerful rich text formatting capabilities.</p>
-                
-                <h3>Key Features</h3>
-                <ul>
-                    <li><strong>Rich Text Formatting:</strong> Customize your notes with bold, italics, lists, headings, and more.</li>
-                    <li><strong>Privacy First:</strong> Your notes are stored locally in your browser. We do not track your content or store it on our servers.</li>
-                    <li><strong>Dark Mode:</strong> Reduce eye strain with a built-in dark theme, perfect for late-night writing.</li>
-                    <li><strong>Auto-Save:</strong> Never lose your work again. Your text is saved automatically as you type.</li>
-                    <li><strong>Export & Share:</strong> Download your notes as text files or create a shareable link instantly.</li>
-                </ul>
+                <div class="seo-container-dense">
+                    <!-- Column 1: About & Core Features -->
+                    <div class="seo-col">
+                        <h2 class="seo-title">Online Notepad for Digital Nomads</h2>
+                        <p class="seo-text">
+                            <strong>Free, secure, browser-based text editor.</strong> Perfect for drafting ideas, cleaning formatting, or writing without distractions. Unlike cloud apps, your data never leaves your device, ensuring total privacy in your local storage.
+                        </p>
+                        <div class="seo-mini-features">
+                            <span class="mini-feat"><i class="fas fa-bolt"></i> Auto-Save</span>
+                            <span class="mini-feat"><i class="fas fa-moon"></i> Dark Mode</span>
+                            <span class="mini-feat"><i class="fas fa-font"></i> Rich Text</span>
+                            <span class="mini-feat"><i class="fas fa-print"></i> PDF Export</span>
+                            <span class="mini-feat"><i class="fas fa-calculator"></i> Word Count</span>
+                            <span class="mini-feat"><i class="fas fa-user-secret"></i> Private</span>
+                        </div>
+                    </div>
 
-                <h3>How to Use</h3>
-                <p>Simply start typing in the main editor area. Use the toolbar at the top to format your text. Your progress is saved automatically to your browser's local storage, so you can close the tab and come back later to pick up right where you left off.</p>
+                    <!-- Column 2: Detailed How-To Guide (Compact) -->
+                    <div class="seo-col">
+                        <h3 class="seo-subtitle">Quick User Guide</h3>
+                        <ul class="seo-list-dense">
+                            <li><i class="fas fa-pen-nib"></i> <strong>Write:</strong> Type instantly. We auto-save to your browser memory.</li>
+                            <li><i class="fas fa-i-cursor"></i> <strong>Format:</strong> Style with <b>Bold</b>, <i>Italics</i>, <span style="text-decoration: underline;">Underline</span>, Lists & Colors.</li>
+                            <li><i class="fas fa-file-upload"></i> <strong>Import:</strong> Drag & drop text files or click Upload to edit.</li>
+                            <li><i class="fas fa-download"></i> <strong>Export:</strong> Save as .txt, or use Print to save as PDF.</li>
+                            <li><i class="fas fa-share-alt"></i> <strong>Share:</strong> Create a secure, read-only link for others.</li>
+                            <li><i class="fas fa-keyboard"></i> <strong>Shortcuts:</strong> Support for Ctrl+S (Save), Ctrl+Z (Undo).</li>
+                            <li><i class="fas fa-eraser"></i> <strong>Reset:</strong> Use the Eraser icon to clear canvas instantly.</li>
+                        </ul>
+                    </div>
 
-                <h3>Frequently Asked Questions</h3>
-                <p><strong>Is it really free?</strong><br>Yes, Online Notepad is completely free to use with no hidden fees or subscriptions.</p>
-                <p><strong>Do I need to create an account?</strong><br>No, you can start writing immediately without signing up.</p>
+                    <!-- Column 3: FAQ & Privacy -->
+                    <div class="seo-col">
+                        <h3 class="seo-subtitle">FAQ & Privacy</h3>
+                        <ul class="seo-list-dense">
+                            <li><strong>Is it free?</strong> Yes, 100% free with no hidden fees or ads.</li>
+                            <li><strong>Is it secure?</strong> Yes. We use client-side storage only.</li>
+                            <li><strong>Where is data?</strong> In LocalStorage. Cleared only if you wipe cache.</li>
+                            <li><strong>Offline?</strong> Yes, works without internet once loaded.</li>
+                            <li><strong>Mobile Ready?</strong> Yes, responsive design for all devices.</li>
+                            <li><strong>Character Limit?</strong> None. Write as much as you need.</li>
+                        </ul>
+                        <div class="seo-privacy-badge">
+                            <i class="fas fa-shield-alt"></i> No Login Required • 100% Client-Side
+                        </div>
+                    </div>
+                </div>
             </section>
         </main>
     </div>
