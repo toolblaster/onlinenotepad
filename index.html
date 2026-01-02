@@ -3,14 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
     <title>Online Notepad - Rich Text Editor & Note Taker</title>
-    <meta name="description" content="Your free, private online notepad. Write, edit, and format rich text. Auto-saves locally. Features dark mode, file upload/download, and sharing.">
+    <meta name="description" content="Free, private online notepad with rich text formatting. Features include auto-save, dark mode, font customization, file upload/download, and note sharing.">
+    <meta name="keywords" content="online notepad, rich text editor, free note taking app, secure notes, dark mode, text formatting, font styles, text color, save to local storage, print notes, upload text file">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://onlinenotepad.toolblaster.com/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://onlinenotepad.toolblaster.com/">
+    <meta property="og:title" content="Online Notepad - Rich Text Editor & Note Taker">
+    <meta property="og:description" content="Free, private online notepad with rich text formatting. Features include auto-save, dark mode, font customization, file upload/download, and note sharing.">
+    <meta property="og:image" content="https://onlinenotepad.toolblaster.com/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://onlinenotepad.toolblaster.com/">
+    <meta property="twitter:title" content="Online Notepad - Rich Text Editor & Note Taker">
+    <meta property="twitter:description" content="Free, private online notepad with rich text formatting. Features include auto-save, dark mode, font customization, file upload/download, and note sharing.">
+    <meta property="twitter:image" content="https://onlinenotepad.toolblaster.com/twitter-image.jpg">
+
+    <!-- JSON-LD Schema for Google Search -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Online Notepad",
+      "alternateName": ["Free Online Notepad", "Rich Text Editor", "ToolBlaster Notepad"],
+      "url": "https://onlinenotepad.toolblaster.com/",
+      "applicationCategory": "ProductivityApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "A comprehensive, free online notepad for writing and editing text directly in your browser. No login required.",
+      "featureList": [
+        "Rich text formatting (Bold, Italic, Underline, Strikethrough)",
+        "Font family and size customization",
+        "Text color and background highlighting",
+        "Bulleted and Numbered lists",
+        "Text alignment (Left, Center, Right)",
+        "Undo and Redo functionality",
+        "Dark Mode interface",
+        "Local browser storage auto-save",
+        "File Upload (.txt, .html) and Download",
+        "Print notes directly to printer or PDF",
+        "Shareable links for notes"
+      ],
+      "browserRequirements": "Requires JavaScript. Works in Chrome, Firefox, Safari, Edge, and modern mobile browsers.",
+      "softwareVersion": "1.0",
+      "author": {
+        "@type": "Organization",
+        "name": "ToolBlaster Team",
+        "url": "https://onlinenotepad.toolblaster.com"
+      },
+      "potentialAction": {
+        "@type": "CreateAction",
+        "target": "https://onlinenotepad.toolblaster.com/",
+        "name": "Create a new note"
+      }
+    }
+    </script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Arial&family=Times+New+Roman&family=Courier+New&family=Georgia&family=Verdana&display=swap" rel="stylesheet">
 
-    <!-- Link to the external CSS file -->
-    <link rel="stylesheet" href="style.css">
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="js-css/style.css">
 </head>
 <body>
     <div id="notesOverlay"></div>
@@ -123,7 +189,6 @@
                             <i class="fas fa-align-right"></i>
                         </button>
                     </div>
-                    <!-- END OF ADDED BUTTONS -->
                     
                     <div class="toolbar-group">
                          <!-- NEW DROPDOWN -->
@@ -231,7 +296,7 @@
         </div>
     </div>
 
-    <!-- Link to the external JS file -->
-    <script src="script.js"></script>
+    <!-- Link to external JS -->
+    <script src="js-css/script.js"></script>
 </body>
 </html>
