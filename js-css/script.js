@@ -12,16 +12,20 @@ class OnlineNotepad {
         this.saveTimeout = null;
         this.maxNotes = 10; // Add max notes limit
         
+        // Track selection to fix toolbar focus issues
+        this.savedRange = null;
+        
         this.init();
     }
 
     init() {
         this.loadNotes();
         this.loadDarkMode();
-        this.loadSettings();
+        // this.loadSettings(); // Removed global font settings loading in favor of rich text
         this.setupEventListeners();
         this.updateCounts();
         this.loadFromURL(); // Check if a note is being shared
+        this.updateToolbar(); // Initial toolbar sync
     }
 
     setupEventListeners() {
@@ -30,6 +34,19 @@ class OnlineNotepad {
             this.updateCounts();
             this.autoSave();
         });
+
+        // Save selection when editor loses focus (crucial for dropdowns)
+        this.editor.addEventListener('blur', () => {
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0) {
+                this.savedRange = selection.getRangeAt(0);
+            }
+        });
+
+        // Sync toolbar on cursor movement
+        this.editor.addEventListener('keyup', () => this.updateToolbar());
+        this.editor.addEventListener('mouseup', () => this.updateToolbar());
+        this.editor.addEventListener('click', () => this.updateToolbar());
 
         // Sidebar listeners
         document.getElementById('newNoteBtn').addEventListener('click', () => this.handleNewNote());
@@ -61,9 +78,31 @@ class OnlineNotepad {
         document.getElementById('alignRightBtn').addEventListener('click', () => this.formatText('justifyRight'));
         
         // Font selectors
-        document.getElementById('formatBlockSelect').addEventListener('change', (e) => this.formatText('formatBlock', e.target.value));
-        document.getElementById('fontFamilySelect').addEventListener('change', (e) => this.saveSettings());
-        document.getElementById('fontSizeSelect').addEventListener('change', (e) => this.saveSettings());
+        document.getElementById('formatBlockSelect').addEventListener('change', (e) => {
+            this.formatText('formatBlock', e.target.value);
+            // Removed the reset line (e.target.value = '<p>') to fix the bug where users couldn't select Normal Text
+        });
+
+        document.getElementById('fontFamilySelect').addEventListener('change', (e) => {
+            this.formatText('fontName', e.target.value);
+        });
+
+        document.getElementById('fontSizeSelect').addEventListener('change', (e) => {
+            // Map pixel values to 1-7 scale for execCommand compatibility
+            let size = 3; // Default 16px (approx)
+            switch(e.target.value) {
+                case '12px': size = 1; break;
+                case '14px': size = 2; break;
+                case '16px': size = 3; break;
+                case '18px': size = 4; break;
+                case '20px': size = 5; break;
+                case '24px': size = 6; break;
+                case '28px': size = 7; break;
+                case '32px': size = 7; break;
+                default: size = 3;
+            }
+            this.formatText('fontSize', size);
+        });
 
         // Color pickers and hex inputs
         const fontColorPicker = document.getElementById('fontColorPicker');
@@ -140,6 +179,38 @@ class OnlineNotepad {
                 }
             }
         });
+    }
+
+    // New Method: Update toolbar state based on cursor position
+    updateToolbar() {
+        // Sync Format Block (Headings)
+        const formatSelect = document.getElementById('formatBlockSelect');
+        const block = document.queryCommandValue('formatBlock');
+        
+        if (block && formatSelect) {
+            // block returns tags like "h1", "p", "div" (without brackets)
+            // formatSelect values are "<h1>", "<p>" (with brackets)
+            const targetValue = `<${block.toLowerCase()}>`;
+            
+            let found = false;
+            for(let i = 0; i < formatSelect.options.length; i++) {
+                if (formatSelect.options[i].value === targetValue) {
+                    formatSelect.selectedIndex = i;
+                    found = true;
+                    break;
+                }
+            }
+            
+            // If the current block isn't one of our headings (e.g. 'div'), default to Normal
+            if (!found) {
+                for(let i = 0; i < formatSelect.options.length; i++) {
+                    if (formatSelect.options[i].value === '<p>') {
+                        formatSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
     }
     
     // --- Note Management ---
@@ -333,7 +404,7 @@ class OnlineNotepad {
             localStorage.setItem('notepad_activeNoteId', this.activeNoteId);
             this.updateCounts();
             this.updateSidebarUI();
-            this.loadSettings(); // Re-apply font settings
+            // this.loadSettings(); // No longer needed as we use rich text
         } else {
             // Note was deleted or is invalid, load first note
             this.handleSelectNote(this.notes[0].id);
@@ -433,27 +504,11 @@ class OnlineNotepad {
     }
 
     loadSettings() {
-        const fontSize = localStorage.getItem('notepad_fontSize');
-        const fontFamily = localStorage.getItem('notepad_fontFamily');
-        
-        this.editor.style.fontSize = fontSize || '16px';
-        document.getElementById('fontSizeSelect').value = fontSize || '16px';
-        
-        this.editor.style.fontFamily = fontFamily || "Inter, -apple-system, sans-serif";
-        document.getElementById('fontFamilySelect').value = fontFamily || "Inter, -apple-system, sans-serif";
+        // Deprecated: Global settings are replaced by Rich Text formatting (selection based)
     }
 
     saveSettings() {
-        const fontSize = document.getElementById('fontSizeSelect').value;
-        const fontFamily = document.getElementById('fontFamilySelect').value;
-        
-        this.editor.style.fontSize = fontSize;
-        this.editor.style.fontFamily = fontFamily;
-        
-        localStorage.setItem('notepad_fontSize', fontSize);
-        localStorage.setItem('notepad_fontFamily', fontFamily);
-        
-        this.autoSave(); // Save note as settings affect it
+        // Deprecated: Global settings are replaced by Rich Text formatting (selection based)
     }
     
     loadFromURL() {
@@ -494,7 +549,16 @@ class OnlineNotepad {
 
     // --- Formatting and Utility ---
 
-    async formatText(command, value = null) { // Added 'async'
+    async formatText(command, value = null) {
+        // 1. Restore focus and selection
+        this.editor.focus();
+        if (this.savedRange) {
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(this.savedRange);
+        }
+
+        // 2. Execute command
         if (command === 'createLink') {
             const url = prompt("Enter the URL:", "https://");
             if (url) {
@@ -504,17 +568,13 @@ class OnlineNotepad {
             // Use the modern Clipboard API
             if (navigator.clipboard && navigator.clipboard.readText) {
                 try {
-                    // This is async and returns the text from the clipboard
                     const text = await navigator.clipboard.readText();
-                    // Insert the text at the cursor
                     document.execCommand('insertText', false, text);
                 } catch (err) {
                     console.error('Failed to read clipboard contents: ', err);
-                    // Fallback for browsers or permissions issues (e.g., in iframes)
                     document.execCommand(command, false, value);
                 }
             } else {
-                // Fallback for very old browsers
                 document.execCommand(command, false, value);
             }
         } else {
@@ -524,6 +584,7 @@ class OnlineNotepad {
         this.editor.focus();
         this.updateCounts();
         this.autoSave(); // Trigger save after formatting
+        this.updateToolbar(); // Sync toolbar immediately
     }
 
     updateCounts() {
