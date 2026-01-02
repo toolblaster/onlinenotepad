@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /cgi-bin/
+
+Allow: /
+# Sitemap location
+Sitemap: https://onlinenotepad.toolblaster.com/sitemap.xml
