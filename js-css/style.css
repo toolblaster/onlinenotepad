@@ -28,6 +28,8 @@ body.dark-mode {
     --editor-bg: #1e1e1e;
     --shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
     --hover-bg: #333333;
+    --muted-text: #999;
+    --light-border: #444;
 }
 
 body {
@@ -192,44 +194,139 @@ body {
     min-height: 100vh; /* Force container to take full viewport height, pushing SEO content down */
 }
 
-/* SEO Content Section */
+/* ========================================
+   NEW COMPACT SEO CONTENT STYLES
+   ========================================
+*/
 .seo-content {
-    padding: 3rem 2rem;
-    max-width: 900px;
-    margin: 0 auto;
-    color: var(--text-color);
-    background-color: var(--bg-color);
+    padding: 1.5rem 2rem;
+    background-color: var(--toolbar-bg); /* Use slight contrast bg */
     border-top: 1px solid var(--border-color);
+    font-size: 0.85rem; /* Compact font size */
+    color: var(--text-color);
 }
 
-.seo-content h2 {
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
+.seo-container-dense {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr 1fr; /* Adjusted for better balance with expanded text */
+    gap: 1.5rem; /* REDUCED from 2rem for compactness */
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.seo-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Headings */
+.seo-title {
+    font-size: 1.1rem;
+    font-weight: 700;
     color: var(--primary-color);
+    margin: 0 0 0.2rem 0;
+    line-height: 1.2;
 }
 
-.seo-content h3 {
-    font-size: 1.4rem;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
+.seo-subtitle {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     font-weight: 600;
+    color: #666; /* Slightly darker text for contrast */
+    margin-bottom: 0.5rem;
+    border-bottom: 2px solid #bbb; /* Increased contrast for the line */
+    padding-bottom: 0.3rem;
 }
 
-.seo-content p {
-    margin-bottom: 1rem;
-    line-height: 1.7;
+/* Text */
+.seo-text {
+    font-size: 0.85rem;
+    line-height: 1.6; /* Increased for readability */
     color: var(--text-color);
     opacity: 0.9;
-}
-
-.seo-content ul {
-    margin-left: 1.5rem;
-    margin-bottom: 1.5rem;
-    list-style-type: disc;
-}
-
-.seo-content li {
     margin-bottom: 0.5rem;
+}
+
+/* Mini Features Grid */
+.seo-mini-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.mini-feat {
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-color);
+    opacity: 0.85;
+}
+
+.mini-feat i {
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+}
+
+/* Dense Lists */
+.seo-list-dense {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem; /* REDUCED from 0.6rem for compactness */
+}
+
+/* Ensure list items handle content wrapping gracefully */
+.seo-list-dense li {
+    font-size: 0.85rem;
+    line-height: 1.4; /* Slightly reduced line height for density */
+    margin-bottom: 0; /* Remove excess bottom margin, rely on gap */
+    display: block; /* Use block to allow text wrapping naturally */
+}
+
+/* Target only FontAwesome icons */
+.seo-list-dense li i.fas,
+.seo-list-dense li i.fa,
+.seo-list-dense li i.fab {
+    color: var(--primary-color);
+    font-size: 0.8rem;
+    width: 20px;
+    text-align: center;
+    display: inline-block;
+    margin-right: 0.4rem;
+}
+
+/* Explicit styling for formatting tags within SEO content */
+.seo-content b, 
+.seo-content strong {
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.seo-content i, 
+.seo-content em {
+    font-style: italic;
+}
+
+.seo-content u {
+    text-decoration: underline;
+}
+
+/* Privacy Badge */
+.seo-privacy-badge {
+    margin-top: auto; /* Push to bottom */
+    padding-top: 1rem;
+    font-size: 0.75rem;
+    color: var(--primary-color);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 /* Header */
@@ -784,6 +881,20 @@ body.full-width .main-content {
 
     .logo h1 {
         font-size: 1.2rem;
+    }
+    
+    /* Responsive SEO Grid */
+    .seo-content {
+        padding: 1.5rem 1rem;
+    }
+    
+    .seo-container-dense {
+        grid-template-columns: 1fr; /* Stack on mobile */
+        gap: 1.5rem;
+    }
+    
+    .seo-mini-features {
+        grid-template-columns: 1fr 1fr; /* Keep 2 cols even on mobile */
     }
 }
 
