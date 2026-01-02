@@ -108,7 +108,7 @@
     </script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Arial&family=Times+New+Roman&family=Courier+New&family=Georgia&family=Verdana&display=swap" rel="stylesheet">
 
     <!-- Link to external CSS -->
@@ -139,17 +139,23 @@
                         <h1>Online Notepad</h1>
                     </div>
                     <div class="header-actions">
+                        <!-- Updated Buttons: Text wrapped in span for mobile hiding -->
                         <button id="uploadBtn" class="btn btn-secondary" title="Upload File" aria-label="Upload Text File">
-                            <i class="fas fa-upload"></i> Upload
+                            <i class="fas fa-upload"></i> <span>Upload</span>
                         </button>
                         <button id="downloadBtn" class="btn btn-secondary" title="Download File" aria-label="Download Text File">
-                            <i class="fas fa-download"></i> Download
+                            <i class="fas fa-download"></i> <span>Download</span>
                         </button>
                         <button id="duplicateBtn" class="btn btn-secondary" title="Duplicate Note" aria-label="Duplicate Current Note">
                             <i class="fas fa-copy"></i> Duplicate
                         </button>
+                        <!-- Updated Share Button (Wrapped text) -->
                         <button id="shareBtn" class="btn btn-secondary" title="Share Note" aria-label="Share Note">
-                            <i class="fas fa-share-alt"></i> Share
+                            <i class="fas fa-share-alt"></i> <span>Share</span>
+                        </button>
+                        <!-- Moved Dark Mode Button Here (Wrapped text) -->
+                        <button id="darkModeBtn" class="btn btn-secondary" title="Toggle Dark Mode" aria-label="Toggle Dark Mode">
+                            <i class="fas fa-moon"></i> <span>Dark Mode</span>
                         </button>
                     </div>
                 </header>
@@ -279,9 +285,7 @@
                         <button id="fullWidthBtn" class="toolbar-btn" title="Toggle Full Width" aria-label="Toggle Full Width Mode">
                             <i class="fas fa-expand-arrows-alt"></i>
                         </button>
-                        <button id="darkModeBtn" class="toolbar-btn" title="Toggle Dark Mode" aria-label="Toggle Dark Mode">
-                            <i class="fas fa-moon"></i>
-                        </button>
+                        <!-- Dark Mode button moved to Header -->
                     </div>
                 </div>
 
