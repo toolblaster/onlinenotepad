@@ -236,6 +236,19 @@
                             <i class="fas fa-align-right"></i>
                         </button>
                     </div>
+
+                    <!-- New Utility Group -->
+                    <div class="toolbar-group">
+                        <button id="dateTimeBtn" class="toolbar-btn" title="Insert Date/Time" aria-label="Insert Date and Time">
+                            <i class="far fa-clock"></i>
+                        </button>
+                        <button id="selectAllBtn" class="toolbar-btn" title="Select All (Ctrl+A)" aria-label="Select All Text">
+                            <i class="fas fa-mouse-pointer"></i>
+                        </button>
+                        <button id="findReplaceBtn" class="toolbar-btn" title="Find and Replace" aria-label="Find and Replace Text">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
                     
                     <div class="toolbar-group">
                          <select id="formatBlockSelect" class="toolbar-select" title="Text Style" aria-label="Text Style">
@@ -401,6 +414,22 @@
                 </button>
             </div>
             <p class="share-note">Note: The content is saved in your browser's local storage. Share functionality creates a shareable URL with encoded content.</p>
+        </div>
+    </div>
+
+    <!-- Modal for Find & Replace -->
+    <div id="findReplaceModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="findReplaceModalTitle">
+        <div class="modal-content">
+            <span class="close" aria-label="Close Find Replace Modal">&times;</span>
+            <h2 id="findReplaceModalTitle">Find and Replace</h2>
+            <div class="share-input-group" style="flex-direction: column;">
+                <input type="text" id="findInput" placeholder="Find text..." aria-label="Text to Find">
+                <input type="text" id="replaceInput" placeholder="Replace with..." aria-label="Replacement Text">
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button id="executeReplaceBtn" class="btn btn-primary" style="flex: 1;">Replace All</button>
+                    <button id="executeFindBtn" class="btn btn-secondary" style="flex: 1;">Find Next</button>
+                </div>
+            </div>
         </div>
     </div>
 
