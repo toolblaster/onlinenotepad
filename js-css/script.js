@@ -84,6 +84,11 @@ class OnlineNotepad {
         document.getElementById('alignCenterBtn').addEventListener('click', () => this.formatText('justifyCenter'));
         document.getElementById('alignRightBtn').addEventListener('click', () => this.formatText('justifyRight'));
         
+        // NEW: Utility buttons
+        document.getElementById('dateTimeBtn').addEventListener('click', () => this.insertDateTime());
+        document.getElementById('selectAllBtn').addEventListener('click', () => this.selectAllText());
+        document.getElementById('findReplaceBtn').addEventListener('click', () => this.openFindReplaceModal());
+
         // Font selectors
         document.getElementById('formatBlockSelect').addEventListener('change', (e) => {
             this.formatText('formatBlock', e.target.value);
@@ -164,8 +169,19 @@ class OnlineNotepad {
         const modal = document.getElementById('shareModal');
         const closeBtn = modal.querySelector('.close');
         closeBtn.addEventListener('click', () => modal.style.display = 'none');
+        
+        // Find Replace Modal
+        const frModal = document.getElementById('findReplaceModal');
+        const frCloseBtn = frModal.querySelector('.close');
+        frCloseBtn.addEventListener('click', () => frModal.style.display = 'none');
+        
+        // Find & Replace Logic
+        document.getElementById('executeReplaceBtn').addEventListener('click', () => this.executeReplace());
+        document.getElementById('executeFindBtn').addEventListener('click', () => this.executeFind());
+
         window.addEventListener('click', (e) => {
             if (e.target === modal) modal.style.display = 'none';
+            if (e.target === frModal) frModal.style.display = 'none';
         });
 
         // Copy link button
@@ -174,10 +190,7 @@ class OnlineNotepad {
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey || e.metaKey) {
-                // Allows native behavior for:
-                // Ctrl+X (Cut), Ctrl+C (Copy), Ctrl+V (Paste) - Resolves clipboard permission issues
-                // Ctrl+Z (Undo), Ctrl+Y (Redo) - Resolves history stack issues
-                // Ctrl+B (Bold), Ctrl+I (Italic), Ctrl+U (Underline) - Supported natively by browser
+                // Allows native behavior for standard shortcuts
                 
                 // Only intercept Ctrl+S for saving
                 if (e.key.toLowerCase() === 's') {
@@ -204,7 +217,6 @@ class OnlineNotepad {
             temp.innerHTML = html;
             
             // Remove specific style attributes that break dark mode (color, background)
-            // We preserve structure (B, I, U, etc.) but remove hardcoded colors
             temp.querySelectorAll('*').forEach(el => {
                 el.style.color = '';
                 el.style.backgroundColor = '';
@@ -228,8 +240,6 @@ class OnlineNotepad {
         const block = document.queryCommandValue('formatBlock');
         
         if (block && formatSelect) {
-            // block returns tags like "h1", "p", "div" (without brackets)
-            // formatSelect values are "<h1>", "<p>" (with brackets)
             const targetValue = `<${block.toLowerCase()}>`;
             
             let found = false;
@@ -241,7 +251,6 @@ class OnlineNotepad {
                 }
             }
             
-            // If the current block isn't one of our headings (e.g. 'div'), default to Normal
             if (!found) {
                 for(let i = 0; i < formatSelect.options.length; i++) {
                     if (formatSelect.options[i].value === '<p>') {
@@ -259,7 +268,7 @@ class OnlineNotepad {
         const savedNotes = localStorage.getItem('notepad_notes');
         this.notes = savedNotes ? JSON.parse(savedNotes) : [];
         
-        // Enforce note limit on load, trimming older notes if necessary
+        // Enforce note limit on load
         if (this.notes.length > this.maxNotes) {
             this.notes = this.notes.slice(0, this.maxNotes);
         }
@@ -267,14 +276,11 @@ class OnlineNotepad {
         let activeId = localStorage.getItem('notepad_activeNoteId');
         
         if (this.notes.length === 0) {
-            // Create a default note if none exist
-            // CHANGED: Initial content is now empty string to trigger CSS placeholder
             const newNote = { id: Date.now(), title: "New Note", content: "", isRenamed: false };
             this.notes.push(newNote);
             this.activeNoteId = newNote.id;
             this.saveNotes();
         } else {
-            // Check if activeId is valid, otherwise default to first note
             this.activeNoteId = activeId && this.notes.find(n => n.id == activeId) ? activeId : this.notes[0].id;
         }
         
@@ -288,7 +294,7 @@ class OnlineNotepad {
         this.notesList.innerHTML = '';
         if (this.notes.length === 0) {
             this.notesList.innerHTML = '<p style="padding: 0.5rem; text-align: center; font-size: 0.9rem; color: #888;">No notes yet.</p>';
-            this.updateNewNoteButtonState(); // Update button state
+            this.updateNewNoteButtonState();
             return;
         }
         
@@ -328,13 +334,13 @@ class OnlineNotepad {
             actions.appendChild(renameBtn);
             actions.appendChild(deleteBtn);
             
-            noteItem.appendChild(countSpan); // Add number first
+            noteItem.appendChild(countSpan);
             noteItem.appendChild(title);
             noteItem.appendChild(actions);
             this.notesList.appendChild(noteItem);
         });
         
-        this.updateNewNoteButtonState(); // Add this call
+        this.updateNewNoteButtonState();
     }
     
     handleNoteListClick(e) {
@@ -366,17 +372,14 @@ class OnlineNotepad {
         const titleEl = noteItem.querySelector('.note-item-title');
         const actionsEl = noteItem.querySelector('.note-item-actions');
         
-        // Hide title and actions
         titleEl.classList.add('editing');
         actionsEl.style.display = 'none';
         
-        // Create and show input field
         const input = document.createElement('input');
         input.type = 'text';
         input.value = note.title;
         input.className = 'note-item-rename-input';
         
-        // Insert input after the title element
         titleEl.after(input);
         input.focus();
         input.select();
@@ -385,22 +388,20 @@ class OnlineNotepad {
             const newTitle = input.value.trim();
             if (newTitle && newTitle !== note.title) {
                 note.title = newTitle;
-                note.isRenamed = true; // Lock the title from auto-updates
+                note.isRenamed = true;
                 this.saveNotes();
                 titleEl.textContent = newTitle;
             }
-            // Clean up
             input.remove();
             titleEl.classList.remove('editing');
-            actionsEl.style.display = ''; // Show actions again
+            actionsEl.style.display = '';
         };
         
         input.addEventListener('blur', saveRename);
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                input.blur(); // Triggers saveRename
+                input.blur();
             } else if (e.key === 'Escape') {
-                // Cancel rename
                 input.remove();
                 titleEl.classList.remove('editing');
                 actionsEl.style.display = '';
@@ -411,13 +412,12 @@ class OnlineNotepad {
     handleNewNote() {
         if (this.notes.length >= this.maxNotes) {
             console.warn("Maximum number of notes (10) reached.");
-            // Button is disabled, so this is an extra safeguard
             return;
         }
-        this.saveActiveNote(); // Save current work
+        this.saveActiveNote();
         
         const newNote = { id: Date.now(), title: "New Note", content: "", isRenamed: false };
-        this.notes.unshift(newNote); // Add to top
+        this.notes.unshift(newNote);
         this.activeNoteId = newNote.id;
         
         this.saveNotes();
@@ -427,20 +427,18 @@ class OnlineNotepad {
         this.updateSidebarUI();
         this.editor.focus();
         
-        this.toggleNotesSidebar(false); // Close mobile sidebar if open
-        // this.updateNewNoteButtonState(); // updateSidebarUI already calls this
+        this.toggleNotesSidebar(false);
     }
 
     handleSelectNote(noteId) {
-        // Check if we are in rename mode
         const renamingInput = this.notesList.querySelector('.note-item-rename-input');
         if (renamingInput) {
-            renamingInput.blur(); // Save rename before switching
+            renamingInput.blur();
         }
 
         if (noteId == this.activeNoteId) return;
         
-        this.saveActiveNote(); // Save previous note
+        this.saveActiveNote();
         
         this.activeNoteId = noteId;
         const activeNote = this.notes.find(n => n.id == this.activeNoteId);
@@ -450,13 +448,11 @@ class OnlineNotepad {
             localStorage.setItem('notepad_activeNoteId', this.activeNoteId);
             this.updateCounts();
             this.updateSidebarUI();
-            // this.loadSettings(); // No longer needed as we use rich text
         } else {
-            // Note was deleted or is invalid, load first note
             this.handleSelectNote(this.notes[0].id);
         }
         
-        this.toggleNotesSidebar(false); // Close mobile sidebar if open
+        this.toggleNotesSidebar(false);
     }
     
     handleDeleteNote(noteId) {
@@ -465,20 +461,18 @@ class OnlineNotepad {
         let nextActiveId = null;
         if (this.activeNoteId == noteId) {
             if (this.notes.length > 0) {
-                nextActiveId = this.notes[0].id; // Select first note
+                nextActiveId = this.notes[0].id;
             }
         }
         
-        this.saveNotes(); // Save the deletion
+        this.saveNotes();
         this.updateSidebarUI();
 
         if (nextActiveId) {
-            this.handleSelectNote(nextActiveId); // Switch to new active note
+            this.handleSelectNote(nextActiveId);
         } else if (this.notes.length === 0) {
-            this.handleNewNote(); // Create a new note if list is empty
+            this.handleNewNote();
         }
-        
-        // this.updateNewNoteButtonState(); // updateSidebarUI already calls this
     }
     
     updateNewNoteButtonState() {
@@ -488,7 +482,7 @@ class OnlineNotepad {
             newNoteBtn.title = "Maximum number of notes reached (10)";
         } else {
             newNoteBtn.disabled = false;
-            newNoteBtn.title = "New Note"; // Reset title
+            newNoteBtn.title = "New Note";
         }
     }
     
@@ -550,11 +544,11 @@ class OnlineNotepad {
     }
 
     loadSettings() {
-        // Deprecated: Global settings are replaced by Rich Text formatting (selection based)
+        // Deprecated
     }
 
     saveSettings() {
-        // Deprecated: Global settings are replaced by Rich Text formatting (selection based)
+        // Deprecated
     }
     
     loadFromURL() {
@@ -563,19 +557,16 @@ class OnlineNotepad {
         
         if (note) {
             try {
-                // Check note limit before importing
                 if (this.notes.length >= this.maxNotes) {
                     console.warn("Note limit reached. Cannot import shared note.");
-                    // We can't use alert, so just log
                     window.history.replaceState({}, document.title, window.location.pathname);
                     return;
                 }
 
-                // Import the shared note as a new note
                 const content = decodeURIComponent(atob(note));
-                const title = this.getNoteTitle(content.replace(/<[^>]+>/g, ' ')); // Get title from plain text
+                const title = this.getNoteTitle(content.replace(/<[^>]+>/g, ' '));
                 
-                const newNote = { id: Date.now(), title, content, isRenamed: true }; // Assume shared notes have fixed names
+                const newNote = { id: Date.now(), title, content, isRenamed: true };
                 this.notes.unshift(newNote);
                 this.activeNoteId = newNote.id;
                 
@@ -584,7 +575,6 @@ class OnlineNotepad {
                 this.updateCounts();
                 this.updateSidebarUI();
                 
-                // Clear the URL parameter
                 window.history.replaceState({}, document.title, window.location.pathname);
             } catch (e) {
                 console.error('Error loading shared note:', e);
@@ -593,10 +583,79 @@ class OnlineNotepad {
         }
     }
 
+    // --- New Features Implementation (Restored) ---
+
+    insertDateTime() {
+        this.editor.focus();
+        const now = new Date();
+        const dateString = now.toLocaleString();
+        document.execCommand('insertText', false, dateString);
+        this.updateCounts();
+        this.autoSave();
+    }
+
+    selectAllText() {
+        this.editor.focus();
+        document.execCommand('selectAll', false, null);
+    }
+
+    openFindReplaceModal() {
+        const modal = document.getElementById('findReplaceModal');
+        modal.style.display = 'block';
+        document.getElementById('findInput').focus();
+    }
+
+    executeReplace() {
+        const findText = document.getElementById('findInput').value;
+        const replaceText = document.getElementById('replaceInput').value;
+        
+        if (!findText) {
+            this.showToast('Please enter text to find', 'error');
+            return;
+        }
+
+        // Safe replace for rich text logic
+        const escapedFind = findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(escapedFind, 'g');
+        
+        this.replaceInTextNodes(this.editor, regex, replaceText);
+        
+        this.updateCounts();
+        this.autoSave();
+        this.showToast('Replacement complete', 'success');
+        document.getElementById('findReplaceModal').style.display = 'none';
+    }
+    
+    replaceInTextNodes(element, regex, replacement) {
+        if (element.nodeType === 3) { // Text node
+            if (regex.test(element.nodeValue)) {
+                element.nodeValue = element.nodeValue.replace(regex, replacement);
+            }
+        } else if (element.nodeType === 1 && element.nodeName !== 'SCRIPT' && element.nodeName !== 'STYLE') {
+            for (let i = 0; i < element.childNodes.length; i++) {
+                this.replaceInTextNodes(element.childNodes[i], regex, replacement);
+            }
+        }
+    }
+
+    executeFind() {
+       const findText = document.getElementById('findInput').value;
+       if (!findText) return;
+       
+       if (window.find && window.getSelection) {
+           this.editor.focus();
+           const found = window.find(findText);
+           if (!found) {
+               this.showToast('Text not found', 'error');
+           }
+       } else {
+           this.showToast('Browser search not supported', 'error');
+       }
+    }
+
     // --- Formatting and Utility ---
 
     async formatText(command, value = null) {
-        // 1. Restore focus and selection
         this.editor.focus();
         if (this.savedRange) {
             const selection = window.getSelection();
@@ -604,14 +663,12 @@ class OnlineNotepad {
             selection.addRange(this.savedRange);
         }
 
-        // 2. Execute command
         if (command === 'createLink') {
             const url = prompt("Enter the URL:", "https://");
             if (url) {
                 document.execCommand(command, false, url);
             }
         } else if (command === 'paste') {
-            // Use the modern Clipboard API
             if (navigator.clipboard && navigator.clipboard.readText) {
                 try {
                     const text = await navigator.clipboard.readText();
@@ -629,8 +686,8 @@ class OnlineNotepad {
         
         this.editor.focus();
         this.updateCounts();
-        this.autoSave(); // Trigger save after formatting
-        this.updateToolbar(); // Sync toolbar immediately
+        this.autoSave();
+        this.updateToolbar();
     }
 
     updateCounts() {
@@ -688,10 +745,9 @@ class OnlineNotepad {
     }
 
     clearAll() {
-        // Now "Clear All" clears the *current* note.
         this.editor.innerHTML = '';
         this.updateCounts();
-        this.saveActiveNote(); // Saves the cleared content
+        this.saveActiveNote();
     }
 
     printNote() {
@@ -706,18 +762,14 @@ class OnlineNotepad {
     uploadFile() {
         if (this.notes.length >= this.maxNotes) {
             console.warn("Cannot upload, maximum number of notes (10) reached.");
-            // We can't use alert, so just log.
             return;
         }
-        // This will import the file as a *new note*
         document.getElementById('fileInput').click();
     }
 
     async handleFileUpload(event) {
         const file = event.target.files[0];
         if (!file) return;
-
-        // Limit check removed because we are appending to the *current* note now.
 
         const reader = new FileReader();
         
@@ -728,15 +780,12 @@ class OnlineNotepad {
                 content = content.replace(/\n/g, '<br>');
             }
             
-            // NEW LOGIC: Append to current note if one exists
             if (this.activeNoteId) {
                 const currentContent = this.editor.innerHTML.trim();
                 
-                // If editor is effectively empty, replace content. Otherwise, append.
                 if (!currentContent || currentContent === '<br>') {
                     this.editor.innerHTML = content;
                 } else {
-                    // Append with some spacing
                     this.editor.innerHTML += '<br><br>' + content;
                 }
                 
@@ -744,7 +793,6 @@ class OnlineNotepad {
                 this.saveActiveNote();
                 this.showToast('File content appended successfully', 'success');
             } else {
-                // Fallback: If no note is selected/active (edge case), create new.
                 const title = file.name.replace(/\.(txt|html|htm)$/i, ''); 
                 const newNote = { id: Date.now(), title, content, isRenamed: true };
                 this.notes.unshift(newNote);
@@ -759,19 +807,17 @@ class OnlineNotepad {
         };
 
         reader.readAsText(file);
-        event.target.value = ''; // Reset file input
+        event.target.value = '';
     }
 
     downloadFile() {
-        // Downloads the *current* note as .txt
         const activeNote = this.notes.find(n => n.id == this.activeNoteId);
-        const content = this.editor.innerText; // Download plain text version
+        const content = this.editor.innerText;
         const blob = new Blob([content], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         
-        // Sanitize title for filename
         const fileName = (activeNote.title || 'notepad').replace(/[^a-z0-9]/gi, '_').toLowerCase();
         a.download = `${fileName}.txt`;
         
@@ -782,7 +828,6 @@ class OnlineNotepad {
     }
 
     duplicateNote() {
-        // Duplicates the *current* note and opens it in a new window (original behavior)
         const content = this.editor.innerHTML;
         const newWindow = window.open('', '_blank');
         if (newWindow) {
@@ -796,7 +841,6 @@ class OnlineNotepad {
     }
 
     shareNote() {
-        // Shares the *current* note
         try {
             const content = this.editor.innerHTML;
             const encoded = btoa(encodeURIComponent(content));
@@ -815,7 +859,7 @@ class OnlineNotepad {
         const input = document.getElementById('shareLink');
         input.select();
         try {
-            document.execCommand('copy'); // Using execCommand for iframe compatibility
+            document.execCommand('copy');
             this.showCopySuccess();
             this.showToast('Link copied to clipboard!', 'success');
         } catch (err) {
@@ -850,12 +894,10 @@ class OnlineNotepad {
         
         container.appendChild(toast);
         
-        // Trigger animation
         requestAnimationFrame(() => {
             toast.classList.add('show');
         });
 
-        // Remove after 3 seconds
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => {
