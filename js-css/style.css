@@ -820,17 +820,74 @@ body.dark-mode #fontSizeSelect {
     color: var(--text-color);
     flex-shrink: 0;
     min-height: 30px; /* Enforce minimal height */
+    position: relative; /* For centering context */
 }
 
 .status-left {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    flex: 1; /* Occupy left space */
+}
+
+/* NEW: Status Center for Lock Button */
+.status-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto; /* Don't grow, just fit content */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .status-right {
     display: flex;
     gap: 1rem;
+    align-items: center; /* Align items vertically */
+    justify-content: flex-end;
+    flex: 1; /* Occupy right space */
+}
+
+/* Status Bar Button (Lock) */
+.status-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-color);
+    opacity: 0.5;
+    padding: 4px 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+}
+
+.status-btn:hover {
+    opacity: 1;
+    color: var(--primary-color);
+    background-color: var(--hover-bg);
+}
+
+.status-btn.active {
+    color: var(--primary-color);
+    opacity: 1;
+}
+
+/* View Locked State: Hide SEO and Footer */
+body.view-locked .seo-content,
+body.view-locked .site-footer {
+    display: none !important;
+}
+
+/* Ensure container takes full height when locked */
+body.view-locked .main-content {
+    overflow: hidden; /* Prevent scrolling in main area if locked */
+}
+
+body.view-locked .container {
+    height: 100%; /* Force container to fill available space */
 }
 
 /* Modal */
