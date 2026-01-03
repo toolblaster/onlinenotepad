@@ -26,6 +26,10 @@ class OnlineNotepad {
         this.updateCounts();
         this.loadFromURL(); // Check if a note is being shared
         this.updateToolbar(); // Initial toolbar sync
+        
+        // Set Footer Year if footer exists
+        const yearSpan = document.getElementById('year');
+        if (yearSpan) yearSpan.textContent = new Date().getFullYear();
     }
 
     setupEventListeners() {
@@ -34,6 +38,9 @@ class OnlineNotepad {
             this.updateCounts();
             this.autoSave();
         });
+
+        // NEW: Smart Paste Handler (Strips colors on paste)
+        this.editor.addEventListener('paste', (e) => this.handlePaste(e));
 
         // Save selection when editor loses focus (crucial for dropdowns)
         this.editor.addEventListener('blur', () => {
@@ -167,18 +174,51 @@ class OnlineNotepad {
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey || e.metaKey) {
-                switch(e.key.toLowerCase()) {
-                    case 'b': e.preventDefault(); this.formatText('bold'); break;
-                    case 'i': e.preventDefault(); this.formatText('italic'); break;
-                    case 'u': e.preventDefault(); this.formatText('underline'); break;
-                    case 'z': e.preventDefault(); this.formatText('undo'); break;
-                    case 'y': e.preventDefault(); this.formatText('redo'); break;
-                    case 'x': e.preventDefault(); this.formatText('cut'); break;
-                    case 'c': e.preventDefault(); this.formatText('copy'); break;
-                    case 's': e.preventDefault(); this.saveActiveNote(); break;
+                // Allows native behavior for:
+                // Ctrl+X (Cut), Ctrl+C (Copy), Ctrl+V (Paste) - Resolves clipboard permission issues
+                // Ctrl+Z (Undo), Ctrl+Y (Redo) - Resolves history stack issues
+                // Ctrl+B (Bold), Ctrl+I (Italic), Ctrl+U (Underline) - Supported natively by browser
+                
+                // Only intercept Ctrl+S for saving
+                if (e.key.toLowerCase() === 's') {
+                    e.preventDefault();
+                    this.saveActiveNote();
+                    this.showToast('Note saved manually', 'success');
                 }
             }
         });
+    }
+
+    // NEW: Handle Paste Event to strip conflicting colors
+    handlePaste(e) {
+        e.preventDefault();
+        
+        // Get data from clipboard
+        const clipboardData = (e.clipboardData || window.clipboardData);
+        const html = clipboardData.getData('text/html');
+        const text = clipboardData.getData('text/plain');
+
+        if (html) {
+            // Create a temp element to clean the HTML
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            
+            // Remove specific style attributes that break dark mode (color, background)
+            // We preserve structure (B, I, U, etc.) but remove hardcoded colors
+            temp.querySelectorAll('*').forEach(el => {
+                el.style.color = '';
+                el.style.backgroundColor = '';
+            });
+            
+            // Insert cleaned HTML
+            document.execCommand('insertHTML', false, temp.innerHTML);
+        } else {
+            // Fallback to plain text insertion
+            document.execCommand('insertText', false, text);
+        }
+        
+        this.updateCounts();
+        this.autoSave();
     }
 
     // New Method: Update toolbar state based on cursor position
@@ -252,7 +292,7 @@ class OnlineNotepad {
             return;
         }
         
-        this.notes.forEach(note => {
+        this.notes.forEach((note, index) => {
             const noteItem = document.createElement('div');
             noteItem.className = 'note-item';
             noteItem.dataset.id = note.id;
@@ -260,6 +300,11 @@ class OnlineNotepad {
             if (note.id == this.activeNoteId) {
                 noteItem.classList.add('active');
             }
+            
+            // Create Number Span
+            const countSpan = document.createElement('span');
+            countSpan.className = 'note-count';
+            countSpan.textContent = `#${index + 1}`;
             
             const title = document.createElement('div');
             title.className = 'note-item-title';
@@ -283,6 +328,7 @@ class OnlineNotepad {
             actions.appendChild(renameBtn);
             actions.appendChild(deleteBtn);
             
+            noteItem.appendChild(countSpan); // Add number first
             noteItem.appendChild(title);
             noteItem.appendChild(actions);
             this.notesList.appendChild(noteItem);
@@ -649,7 +695,7 @@ class OnlineNotepad {
     }
 
     printNote() {
-        document.body.style.setProperty('--editor-font-size', this.editor.style.fontSize || '16px');
+        document.body.style.setProperty('--editor-font-size', this.editor.style.fontSize || '14px');
         document.body.style.setProperty('--editor-line-height', this.editor.style.lineHeight || '1.8');
         document.body.style.setProperty('--editor-font-family', this.editor.style.fontFamily || "'Times New Roman', serif");
         window.print();
@@ -671,12 +717,7 @@ class OnlineNotepad {
         const file = event.target.files[0];
         if (!file) return;
 
-        if (this.notes.length >= this.maxNotes) {
-            console.warn("Cannot upload, maximum number of notes (10) reached.");
-            // We can't use alert, so just log and return.
-            event.target.value = ''; // Reset file input
-            return;
-        }
+        // Limit check removed because we are appending to the *current* note now.
 
         const reader = new FileReader();
         
@@ -687,16 +728,34 @@ class OnlineNotepad {
                 content = content.replace(/\n/g, '<br>');
             }
             
-            // Create a new note for the uploaded content
-            const title = file.name.replace(/\.(txt|html|htm)$/i, ''); // Use file name as title
-            const newNote = { id: Date.now(), title, content, isRenamed: true }; // Lock title
-            this.notes.unshift(newNote);
-            this.activeNoteId = newNote.id;
-            
-            this.saveNotes();
-            this.editor.innerHTML = content;
-            this.updateCounts();
-            this.updateSidebarUI();
+            // NEW LOGIC: Append to current note if one exists
+            if (this.activeNoteId) {
+                const currentContent = this.editor.innerHTML.trim();
+                
+                // If editor is effectively empty, replace content. Otherwise, append.
+                if (!currentContent || currentContent === '<br>') {
+                    this.editor.innerHTML = content;
+                } else {
+                    // Append with some spacing
+                    this.editor.innerHTML += '<br><br>' + content;
+                }
+                
+                this.updateCounts();
+                this.saveActiveNote();
+                this.showToast('File content appended successfully', 'success');
+            } else {
+                // Fallback: If no note is selected/active (edge case), create new.
+                const title = file.name.replace(/\.(txt|html|htm)$/i, ''); 
+                const newNote = { id: Date.now(), title, content, isRenamed: true };
+                this.notes.unshift(newNote);
+                this.activeNoteId = newNote.id;
+                
+                this.saveNotes();
+                this.editor.innerHTML = content;
+                this.updateCounts();
+                this.updateSidebarUI();
+                this.showToast('File imported as new note', 'success');
+            }
         };
 
         reader.readAsText(file);
@@ -758,8 +817,10 @@ class OnlineNotepad {
         try {
             document.execCommand('copy'); // Using execCommand for iframe compatibility
             this.showCopySuccess();
+            this.showToast('Link copied to clipboard!', 'success');
         } catch (err) {
             console.error('Failed to copy link.');
+            this.showToast('Failed to copy link', 'error');
         }
     }
     
@@ -773,6 +834,34 @@ class OnlineNotepad {
             btn.innerHTML = originalText;
             btn.style.backgroundColor = '';
         }, 2000);
+    }
+
+    // Toast Notification System
+    showToast(message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        
+        const icon = type === 'success' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-circle"></i>';
+        
+        toast.innerHTML = `${icon} <span>${message}</span>`;
+        
+        container.appendChild(toast);
+        
+        // Trigger animation
+        requestAnimationFrame(() => {
+            toast.classList.add('show');
+        });
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 3000);
     }
 }
 
