@@ -254,8 +254,8 @@
                         </select>
                         <select id="fontSizeSelect" class="toolbar-select" aria-label="Font Size">
                             <option value="12px">12px</option>
-                            <option value="14px">14px</option>
-                            <option value="16px" selected>16px</option>
+                            <option value="14px" selected>14px</option>
+                            <option value="16px">16px</option>
                             <option value="18px">18px</option>
                             <option value="20px">20px</option>
                             <option value="24px">24px</option>
@@ -363,11 +363,30 @@
                     </div>
                 </div>
             </section>
+
+            <!-- ADDED: Footer Section -->
+            <footer class="site-footer">
+                <div class="footer-content">
+                    <nav class="footer-links">
+                        <a href="legal/privacy.html">Privacy Policy</a>
+                        <span class="separator">•</span>
+                        <a href="legal/terms.html">Terms of Service</a>
+                        <span class="separator">•</span>
+                        <a href="legal/keyboard-shortcuts.html">Shortcuts</a>
+                        <span class="separator">•</span>
+                        <a href="legal/contact.html">Contact Us</a>
+                    </nav>
+                    <p class="copyright">&copy; <span id="year"></span> Online Notepad</p>
+                </div>
+            </footer>
         </main>
     </div>
 
     <!-- Hidden file input -->
     <input type="file" id="fileInput" accept=".txt,.html,.htm" style="display: none;">
+
+    <!-- ADDED: Toast Notification Container -->
+    <div id="toast-container"></div>
 
     <!-- Modal for Share -->
     <div id="shareModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">
