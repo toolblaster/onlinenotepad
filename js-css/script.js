@@ -21,7 +21,6 @@ class OnlineNotepad {
     init() {
         this.loadNotes();
         this.loadDarkMode();
-        // this.loadSettings(); // Removed global font settings loading in favor of rich text
         this.setupEventListeners();
         this.updateCounts();
         this.loadFromURL(); // Check if a note is being shared
@@ -88,11 +87,16 @@ class OnlineNotepad {
         document.getElementById('dateTimeBtn').addEventListener('click', () => this.insertDateTime());
         document.getElementById('selectAllBtn').addEventListener('click', () => this.selectAllText());
         document.getElementById('findReplaceBtn').addEventListener('click', () => this.openFindReplaceModal());
+        
+        // NEW: Lock View Button
+        const lockBtn = document.getElementById('lockViewBtn');
+        if (lockBtn) {
+            lockBtn.addEventListener('click', () => this.toggleViewLock());
+        }
 
         // Font selectors
         document.getElementById('formatBlockSelect').addEventListener('change', (e) => {
             this.formatText('formatBlock', e.target.value);
-            // Removed the reset line (e.target.value = '<p>') to fix the bug where users couldn't select Normal Text
         });
 
         document.getElementById('fontFamilySelect').addEventListener('change', (e) => {
@@ -100,8 +104,7 @@ class OnlineNotepad {
         });
 
         document.getElementById('fontSizeSelect').addEventListener('change', (e) => {
-            // Map pixel values to 1-7 scale for execCommand compatibility
-            let size = 3; // Default 16px (approx)
+            let size = 3; 
             switch(e.target.value) {
                 case '12px': size = 1; break;
                 case '14px': size = 2; break;
@@ -116,19 +119,17 @@ class OnlineNotepad {
             this.formatText('fontSize', size);
         });
 
-        // Color pickers and hex inputs
+        // Color pickers
         const fontColorPicker = document.getElementById('fontColorPicker');
         const fontColorHex = document.getElementById('fontColorHex');
         const highlightColorPicker = document.getElementById('highlightColorPicker');
         const highlightColorHex = document.getElementById('highlightColorHex');
 
-        // Sync picker to hex
         fontColorPicker.addEventListener('input', (e) => {
             const color = e.target.value;
             fontColorHex.value = color;
             this.formatText('foreColor', color);
         });
-        // Sync hex to picker
         fontColorHex.addEventListener('change', (e) => {
             let color = e.target.value;
             if (!color.startsWith('#')) color = '#' + color;
@@ -136,13 +137,11 @@ class OnlineNotepad {
             this.formatText('foreColor', color);
         });
 
-        // Sync picker to hex
         highlightColorPicker.addEventListener('input', (e) => {
             const color = e.target.value;
             highlightColorHex.value = color;
             this.formatText('backColor', color);
         });
-        // Sync hex to picker
         highlightColorHex.addEventListener('change', (e) => {
             let color = e.target.value;
             if (!color.startsWith('#')) color = '#' + color;
@@ -165,17 +164,15 @@ class OnlineNotepad {
         // File input
         document.getElementById('fileInput').addEventListener('change', (e) => this.handleFileUpload(e));
 
-        // Modal
+        // Modals
         const modal = document.getElementById('shareModal');
         const closeBtn = modal.querySelector('.close');
         closeBtn.addEventListener('click', () => modal.style.display = 'none');
         
-        // Find Replace Modal
         const frModal = document.getElementById('findReplaceModal');
         const frCloseBtn = frModal.querySelector('.close');
         frCloseBtn.addEventListener('click', () => frModal.style.display = 'none');
         
-        // Find & Replace Logic
         document.getElementById('executeReplaceBtn').addEventListener('click', () => this.executeReplace());
         document.getElementById('executeFindBtn').addEventListener('click', () => this.executeFind());
 
@@ -184,15 +181,11 @@ class OnlineNotepad {
             if (e.target === frModal) frModal.style.display = 'none';
         });
 
-        // Copy link button
         document.getElementById('copyLinkBtn').addEventListener('click', () => this.copyShareLink());
 
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey || e.metaKey) {
-                // Allows native behavior for standard shortcuts
-                
-                // Only intercept Ctrl+S for saving
                 if (e.key.toLowerCase() === 's') {
                     e.preventDefault();
                     this.saveActiveNote();
@@ -202,30 +195,47 @@ class OnlineNotepad {
         });
     }
 
-    // NEW: Handle Paste Event to strip conflicting colors
+    // --- View Locking Feature ---
+    toggleViewLock() {
+        document.body.classList.toggle('view-locked');
+        const isLocked = document.body.classList.contains('view-locked');
+        const btn = document.getElementById('lockViewBtn');
+        const icon = btn.querySelector('i');
+        
+        if (isLocked) {
+            btn.classList.add('active');
+            // Informative tooltip for Locked state
+            btn.title = "View Locked: Scrolling disabled to keep focus on editor";
+            icon.className = 'fas fa-lock';
+            this.showToast('View Locked: Focus Mode Enabled', 'success');
+        } else {
+            btn.classList.remove('active');
+            // Informative tooltip for Unlocked state
+            btn.title = "Lock View: Prevent scrolling to keep focus on the editor";
+            icon.className = 'fas fa-lock-open';
+            this.showToast('View Unlocked', 'success');
+        }
+    }
+
+    // NEW: Handle Paste Event to strip conflicting colors AND sizes
     handlePaste(e) {
         e.preventDefault();
         
-        // Get data from clipboard
         const clipboardData = (e.clipboardData || window.clipboardData);
         const html = clipboardData.getData('text/html');
         const text = clipboardData.getData('text/plain');
 
         if (html) {
-            // Create a temp element to clean the HTML
             const temp = document.createElement('div');
             temp.innerHTML = html;
             
-            // Remove specific style attributes that break dark mode (color, background)
+            // Remove all inline styles to force pasted content to inherit editor styles
             temp.querySelectorAll('*').forEach(el => {
-                el.style.color = '';
-                el.style.backgroundColor = '';
+                el.removeAttribute('style'); // Completely strips style="..." attribute
             });
             
-            // Insert cleaned HTML
             document.execCommand('insertHTML', false, temp.innerHTML);
         } else {
-            // Fallback to plain text insertion
             document.execCommand('insertText', false, text);
         }
         
@@ -233,9 +243,8 @@ class OnlineNotepad {
         this.autoSave();
     }
 
-    // New Method: Update toolbar state based on cursor position
+    // Update toolbar state based on cursor position
     updateToolbar() {
-        // Sync Format Block (Headings)
         const formatSelect = document.getElementById('formatBlockSelect');
         const block = document.queryCommandValue('formatBlock');
         
@@ -268,7 +277,6 @@ class OnlineNotepad {
         const savedNotes = localStorage.getItem('notepad_notes');
         this.notes = savedNotes ? JSON.parse(savedNotes) : [];
         
-        // Enforce note limit on load
         if (this.notes.length > this.maxNotes) {
             this.notes = this.notes.slice(0, this.maxNotes);
         }
@@ -307,7 +315,6 @@ class OnlineNotepad {
                 noteItem.classList.add('active');
             }
             
-            // Create Number Span
             const countSpan = document.createElement('span');
             countSpan.className = 'note-count';
             countSpan.textContent = `#${index + 1}`;
@@ -327,7 +334,7 @@ class OnlineNotepad {
             
             const deleteBtn = document.createElement('span');
             deleteBtn.className = 'note-action-btn note-item-delete';
-            deleteBtn.innerHTML = '<i class="fas fa-times"></i>'; // 'X' icon
+            deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
             deleteBtn.dataset.id = note.id;
             deleteBtn.title = "Delete Note";
             
@@ -346,14 +353,14 @@ class OnlineNotepad {
     handleNoteListClick(e) {
         const deleteBtn = e.target.closest('.note-item-delete');
         if (deleteBtn) {
-            e.stopPropagation(); // Prevent selection
+            e.stopPropagation();
             this.handleDeleteNote(deleteBtn.dataset.id);
             return;
         }
         
         const renameBtn = e.target.closest('.note-item-rename');
         if (renameBtn) {
-            e.stopPropagation(); // Prevent selection
+            e.stopPropagation();
             this.handleRenameNote(renameBtn.dataset.id);
             return;
         }
@@ -511,7 +518,6 @@ class OnlineNotepad {
         let currentTitle = activeNote.title;
         let titleChanged = false;
 
-        // Only auto-update title if it has not been manually renamed
         if (!activeNote.isRenamed) {
             const newAutoTitle = this.getNoteTitle(this.editor.innerText);
             if (newAutoTitle !== activeNote.title) {
@@ -521,14 +527,12 @@ class OnlineNotepad {
             }
         }
         
-        // Only save if content or title changed
         if (activeNote.content !== currentContent || titleChanged) {
             activeNote.content = currentContent;
             
             this.saveNotes();
             this.updateLastSaved();
             
-            // Update title in sidebar if it changed
             if (titleChanged) {
                 const noteItem = this.notesList.querySelector(`.note-item[data-id="${this.activeNoteId}"] .note-item-title`);
                 if (noteItem) {
@@ -583,7 +587,7 @@ class OnlineNotepad {
         }
     }
 
-    // --- New Features Implementation (Restored) ---
+    // --- New Features Implementation ---
 
     insertDateTime() {
         this.editor.focus();
@@ -614,7 +618,6 @@ class OnlineNotepad {
             return;
         }
 
-        // Safe replace for rich text logic
         const escapedFind = findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const regex = new RegExp(escapedFind, 'g');
         
@@ -679,6 +682,51 @@ class OnlineNotepad {
                 }
             } else {
                 document.execCommand(command, false, value);
+            }
+        } else if (command === 'formatBlock') {
+            // Apply the block format (H1, H2, etc.)
+            document.execCommand(command, false, value);
+            
+            // --- AGGRESSIVE FIX FOR HEADINGS ---
+            // After applying formatBlock, we need to find the node and aggressively 
+            // remove inline font-size/weight from it and ALL its children to let CSS take over.
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0) {
+                let node = selection.anchorNode;
+                
+                // Traverse up to find the block element (element node with H1-H6, P, DIV tag)
+                // Use a safer check to avoid infinite loops or going past editor
+                while (node && node !== this.editor) {
+                    if (node.nodeType === 1 && ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'DIV'].includes(node.tagName)) {
+                        break;
+                    }
+                    node = node.parentNode;
+                }
+                
+                // If we found a valid block element inside the editor
+                if (node && node !== this.editor && node.nodeType === 1) {
+                    // 1. Clear inline styles on the block tag itself
+                    // We remove everything related to fonts/layout
+                    node.style.fontSize = '';
+                    node.style.fontWeight = '';
+                    node.style.lineHeight = '';
+                    node.style.margin = ''; 
+                    
+                    // 2. Clear inline styles on ALL child elements (spans, strong, b, i, font etc.)
+                    // This is crucial because 'font-size' on a child span overrides the parent H1's size.
+                    const children = node.querySelectorAll('*');
+                    children.forEach(child => {
+                        child.style.fontSize = '';
+                        child.style.fontWeight = ''; // Reset bold so headers don't get double bold
+                        child.style.lineHeight = '';
+                        
+                        // If it's a FONT tag (deprecated but possible), remove size attr
+                        if (child.tagName === 'FONT') {
+                            child.removeAttribute('size');
+                            child.removeAttribute('face');
+                        }
+                    });
+                }
             }
         } else {
             document.execCommand(command, false, value);
