@@ -157,7 +157,8 @@ class OnlineNotepad {
 
         // File operations
         document.getElementById('uploadBtn').addEventListener('click', () => this.uploadFile());
-        document.getElementById('downloadBtn').addEventListener('click', () => this.downloadFile());
+        // Updated: Open Modal instead of direct download
+        document.getElementById('downloadBtn').addEventListener('click', () => this.openDownloadModal());
         document.getElementById('duplicateBtn').addEventListener('click', () => this.duplicateNote());
         document.getElementById('shareBtn').addEventListener('click', () => this.shareNote());
 
@@ -173,23 +174,82 @@ class OnlineNotepad {
         const frCloseBtn = frModal.querySelector('.close');
         frCloseBtn.addEventListener('click', () => frModal.style.display = 'none');
         
+        // New Download Modal Logic
+        const downloadModal = document.getElementById('downloadModal');
+        const dlCloseBtn = downloadModal.querySelector('.close');
+        dlCloseBtn.addEventListener('click', () => downloadModal.style.display = 'none');
+        
+        document.getElementById('downloadTxtBtn').addEventListener('click', () => this.downloadFile('txt'));
+        document.getElementById('downloadPdfBtn').addEventListener('click', () => this.downloadFile('pdf'));
+        
         document.getElementById('executeReplaceBtn').addEventListener('click', () => this.executeReplace());
         document.getElementById('executeFindBtn').addEventListener('click', () => this.executeFind());
 
         window.addEventListener('click', (e) => {
             if (e.target === modal) modal.style.display = 'none';
             if (e.target === frModal) frModal.style.display = 'none';
+            if (e.target === downloadModal) downloadModal.style.display = 'none';
         });
 
         document.getElementById('copyLinkBtn').addEventListener('click', () => this.copyShareLink());
 
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
+            // Global shortcuts with Ctrl / Meta
             if (e.ctrlKey || e.metaKey) {
-                if (e.key.toLowerCase() === 's') {
+                const key = e.key.toLowerCase();
+                
+                // Save: Ctrl + S
+                if (key === 's') {
                     e.preventDefault();
                     this.saveActiveNote();
                     this.showToast('Note saved manually', 'success');
+                }
+                
+                // Find & Replace: Ctrl + F
+                if (key === 'f') {
+                    e.preventDefault();
+                    this.openFindReplaceModal();
+                }
+            }
+            
+            // Alt shortcuts for App Actions
+            if (e.altKey) {
+                const key = e.key.toLowerCase();
+                
+                // New Note: Alt + N
+                if (key === 'n') {
+                    e.preventDefault();
+                    this.handleNewNote();
+                }
+                
+                // Toggle Dark Mode: Alt + M
+                if (key === 'm') {
+                    e.preventDefault();
+                    this.toggleDarkMode();
+                }
+                
+                // Lock View: Alt + L
+                if (key === 'l') {
+                    e.preventDefault();
+                    this.toggleViewLock();
+                }
+            }
+            
+            // Escape to close all modals and sidebar
+            if (e.key === 'Escape') {
+                const shareModal = document.getElementById('shareModal');
+                const findModal = document.getElementById('findReplaceModal');
+                const dlModal = document.getElementById('downloadModal');
+                
+                if (shareModal.style.display === 'block') shareModal.style.display = 'none';
+                if (findModal.style.display === 'block') findModal.style.display = 'none';
+                if (dlModal.style.display === 'block') dlModal.style.display = 'none';
+                
+                // Close sidebar if on mobile
+                const sidebar = document.getElementById('notes-sidebar');
+                if (sidebar.classList.contains('open')) {
+                    this.toggleNotesSidebar(false);
                 }
             }
         });
@@ -205,7 +265,7 @@ class OnlineNotepad {
         if (isLocked) {
             btn.classList.add('active');
             // Informative tooltip for Locked state
-            btn.title = "View Locked: Scrolling disabled to keep focus on editor";
+            btn.title = "View Locked: Scrolling disabled to keep focus on the editor";
             icon.className = 'fas fa-lock';
             this.showToast('View Locked: Focus Mode Enabled', 'success');
         } else {
@@ -418,6 +478,7 @@ class OnlineNotepad {
 
     handleNewNote() {
         if (this.notes.length >= this.maxNotes) {
+            this.showToast("Maximum number of notes (10) reached.", "error");
             console.warn("Maximum number of notes (10) reached.");
             return;
         }
@@ -433,6 +494,7 @@ class OnlineNotepad {
         this.updateCounts();
         this.updateSidebarUI();
         this.editor.focus();
+        this.showToast('New note created', 'success');
         
         this.toggleNotesSidebar(false);
     }
@@ -760,6 +822,7 @@ class OnlineNotepad {
         
         const icon = document.querySelector('#darkModeBtn i');
         icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        this.showToast(isDark ? 'Dark Mode Enabled' : 'Light Mode Enabled', 'success');
     }
 
     loadDarkMode() {
@@ -858,21 +921,81 @@ class OnlineNotepad {
         event.target.value = '';
     }
 
-    downloadFile() {
+    openDownloadModal() {
+        document.getElementById('downloadModal').style.display = 'block';
+    }
+
+    downloadFile(format) {
+        // Handle direct call from old logic or new modal
+        if (!format) {
+             this.openDownloadModal();
+             return;
+        }
+        
         const activeNote = this.notes.find(n => n.id == this.activeNoteId);
-        const content = this.editor.innerText;
-        const blob = new Blob([content], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        
         const fileName = (activeNote.title || 'notepad').replace(/[^a-z0-9]/gi, '_').toLowerCase();
-        a.download = `${fileName}.txt`;
         
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        if (format === 'txt') {
+            const content = this.editor.innerText;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${fileName}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            document.getElementById('downloadModal').style.display = 'none';
+        } else if (format === 'pdf') {
+            this.downloadPdf(fileName);
+            document.getElementById('downloadModal').style.display = 'none';
+        }
+    }
+    
+    async downloadPdf(fileName) {
+        // Dynamically load html2pdf library if not already loaded
+        if (typeof html2pdf === 'undefined') {
+            this.showToast('Loading PDF engine...', 'success'); // Using 'success' style for info
+            try {
+                await this.loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
+            } catch (error) {
+                console.error("Failed to load PDF library", error);
+                this.showToast('Failed to load PDF engine', 'error');
+                return;
+            }
+        }
+        
+        const element = this.editor;
+        
+        // PDF Options
+        const opt = {
+            margin:       [0.5, 0.5], // 0.5 inch margins
+            filename:     `${fileName}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        
+        // Start generation
+        this.showToast('Generating PDF...', 'success');
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+             this.showToast('PDF Downloaded', 'success');
+        }).catch(err => {
+             console.error(err);
+             this.showToast('PDF generation failed', 'error');
+        });
+    }
+
+    loadScript(src) {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
     }
 
     duplicateNote() {
