@@ -157,7 +157,7 @@
                         <button id="uploadBtn" class="btn btn-secondary" title="Upload File" aria-label="Upload Text File">
                             <i class="fas fa-upload"></i> <span>Upload</span>
                         </button>
-                        <button id="downloadBtn" class="btn btn-secondary" title="Download File" aria-label="Download Text File">
+                        <button id="downloadBtn" class="btn btn-secondary" title="Download File" aria-label="Download File">
                             <i class="fas fa-download"></i> <span>Download</span>
                         </button>
                         <button id="duplicateBtn" class="btn btn-secondary" title="Duplicate Note" aria-label="Duplicate Current Note">
@@ -359,6 +359,8 @@
                         <ul class="seo-list-dense">
                             <li><i class="fas fa-pen-nib"></i> <strong>Write:</strong> Type instantly. We auto-save to your browser memory.</li>
                             <li><i class="fas fa-i-cursor"></i> <strong>Format:</strong> Style with <b>Bold</b>, <i>Italics</i>, <span style="text-decoration: underline;">Underline</span>, Lists & Colors.</li>
+                            <!-- ADDED: Spellcheck Feature -->
+                            <li><i class="fas fa-spell-check"></i> <strong>Spellcheck:</strong> Instantly fix spelling mistakes under red underlined.</li>
                             <li><i class="fas fa-file-upload"></i> <strong>Import:</strong> Drag & drop text files or click Upload to edit.</li>
                             <li><i class="fas fa-download"></i> <strong>Export:</strong> Save as .txt, or use Print to save as PDF.</li>
                             <li><i class="fas fa-share-alt"></i> <strong>Share:</strong> Create a secure, read-only link for others.</li>
@@ -393,11 +395,11 @@
                         <span class="separator">•</span>
                         <a href="legal/terms.html">Terms of Service</a>
                         <span class="separator">•</span>
-                        <a href="legal/keyboard-shortcuts.html">Shortcuts</a>
-                        <span class="separator">•</span>
                         <a href="legal/contact.html">Contact Us</a>
+                        <span class="separator">•</span>
+                        <a href="legal/keyboard-shortcuts.html">Keyboard Shortcuts</a>
                     </nav>
-                    <p class="copyright">&copy; <span id="year"></span> Online Notepad</p>
+                    <p class="copyright">&copy; <span id="year"></span> Online Notepad <span style="font-size: 0.9em; opacity: 0.7; margin-left: 4px;">by toolblaster.com</span></p>
                 </div>
             </footer>
         </main>
@@ -422,6 +424,23 @@
                 </button>
             </div>
             <p class="share-note">Note: The content is saved in your browser's local storage. Share functionality creates a shareable URL with encoded content.</p>
+        </div>
+    </div>
+
+    <!-- Modal for Download Options (NEW) -->
+    <div id="downloadModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="downloadModalTitle">
+        <div class="modal-content">
+            <span class="close" aria-label="Close Download Modal">&times;</span>
+            <h2 id="downloadModalTitle">Download Note</h2>
+            <p>Select a format to download:</p>
+            <div class="download-options-grid">
+                <button id="downloadTxtBtn" class="btn btn-secondary download-option-btn" aria-label="Download as Text File">
+                    <i class="fas fa-file-alt"></i> Text File (.txt)
+                </button>
+                <button id="downloadPdfBtn" class="btn btn-secondary download-option-btn" aria-label="Download as PDF Document">
+                    <i class="fas fa-file-pdf"></i> PDF Document (.pdf)
+                </button>
+            </div>
         </div>
     </div>
 
