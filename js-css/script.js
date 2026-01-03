@@ -687,7 +687,7 @@ class OnlineNotepad {
             // Apply the block format (H1, H2, etc.)
             document.execCommand(command, false, value);
             
-            // --- AGGRESSIVE FIX FOR HEADINGS ---
+            // --- FIX FOR HEADINGS ---
             // After applying formatBlock, we need to find the node and aggressively 
             // remove inline font-size/weight from it and ALL its children to let CSS take over.
             const selection = window.getSelection();
@@ -706,7 +706,6 @@ class OnlineNotepad {
                 // If we found a valid block element inside the editor
                 if (node && node !== this.editor && node.nodeType === 1) {
                     // 1. Clear inline styles on the block tag itself
-                    // We remove everything related to fonts/layout
                     node.style.fontSize = '';
                     node.style.fontWeight = '';
                     node.style.lineHeight = '';
@@ -717,7 +716,8 @@ class OnlineNotepad {
                     const children = node.querySelectorAll('*');
                     children.forEach(child => {
                         child.style.fontSize = '';
-                        child.style.fontWeight = ''; // Reset bold so headers don't get double bold
+                        // Removed fontWeight reset for children to preserve bold if applied, 
+                        // but H1 itself should set weight.
                         child.style.lineHeight = '';
                         
                         // If it's a FONT tag (deprecated but possible), remove size attr
