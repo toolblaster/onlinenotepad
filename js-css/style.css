@@ -1248,15 +1248,18 @@ body.full-width .main-content {
 .editor ul {
     list-style-type: disc;
     margin-left: 2rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem; /* Reduced from 1rem */
+    margin-top: 0.2rem; /* Added margin top control */
 }
 
 .editor ol {
     list-style-type: decimal;
     margin-left: 2rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem; /* Reduced from 1rem */
+    margin-top: 0.2rem; /* Added margin top control */
 }
 
 .editor li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.2rem; /* Reduced from 0.5rem */
+    line-height: 1.4; /* Slightly tighter line height for list items */
 }
