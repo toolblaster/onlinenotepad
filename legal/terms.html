@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - Online Notepad</title>
+    <meta name="robots" content="noindex, follow">
+    <link rel="icon" type="image/png" href="../favicon/favicon-96x96.png" sizes="96x96" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../js-css/style.css">
+    <style>
+        /* Compact Vertical Layout (Privacy Page Style but Smaller) */
+        body { background-color: var(--bg-color); color: var(--text-color); }
+        
+        .legal-wrapper { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 1rem 1.5rem; /* Reduced padding */
+        }
+        
+        .back-link { 
+            display: inline-block; 
+            margin-bottom: 0.5rem; 
+            font-size: 0.75rem; 
+            color: var(--secondary-color); 
+            text-decoration: none; 
+            font-weight: 600;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        .legal-content h1 { 
+            font-size: 1.2rem; /* Smaller H1 */
+            color: var(--primary-color); 
+            margin-bottom: 0.2rem; 
+        }
+
+        .last-updated { 
+            font-size: 0.7rem; 
+            color: #888; 
+            margin-bottom: 1rem; 
+            font-style: italic; 
+            display: block;
+        }
+
+        .legal-content h2 { 
+            font-size: 0.9rem; /* Compact H2 */
+            margin-top: 1rem; 
+            margin-bottom: 0.3rem; 
+            color: var(--text-color); 
+            border-bottom: 1px solid var(--border-color); 
+            padding-bottom: 0.1rem; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .legal-content p, 
+        .legal-content li { 
+            font-size: 0.8rem; /* Small, dense text */
+            line-height: 1.4; 
+            color: var(--text-color); 
+            opacity: 0.9; 
+            margin-bottom: 0.5rem; 
+        }
+
+        .legal-content ul { 
+            padding-left: 1.2rem; 
+            margin-bottom: 0.5rem;
+        }
+        
+        .legal-content li { margin-bottom: 0.2rem; }
+
+        /* Disclaimer Box - Fits flow but stands out */
+        .disclaimer-section {
+            background: rgba(244, 67, 54, 0.05);
+            border-left: 3px solid var(--danger-color);
+            padding: 0.8rem;
+            margin-top: 1rem;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .disclaimer-section h2 {
+            color: var(--danger-color);
+            border-bottom: none;
+            margin-top: 0;
+        }
+        
+        .disclaimer-section p {
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="legal-wrapper">
+        <!-- Updated to use root URL path -->
+        <a href="../" class="back-link">&larr; Back to Editor</a>
+        
+        <div class="legal-content">
+            <h1>Terms of Service</h1>
+            <span class="last-updated">Last Updated: January 3, 2026</span>
+
+            <p>By using Online Notepad, you agree to these terms. If you disagree, please discontinue use.</p>
+
+            <h2>1. Service Description</h2>
+            <p>Online Notepad is a free, browser-based text editor. The Service operates primarily on the client-side, utilizing your browser's local storage capabilities. We do not store your content on central servers.</p>
+
+            <h2>2. User Responsibility & Data</h2>
+            <p>You acknowledge that:</p>
+            <ul>
+                <li><strong>Local Storage:</strong> Notes live in your device's <code>localStorage</code>.</li>
+                <li><strong>Data Loss:</strong> Clearing your browser cache or "site data" will permanently delete your notes. We cannot recover lost data.</li>
+                <li><strong>Content:</strong> You retain full ownership of the text you create.</li>
+            </ul>
+
+            <h2>3. Intellectual Property</h2>
+            <p>The interface, design, and code are the property of ToolBlaster. You may not reverse engineer or distribute the application code without permission.</p>
+
+            <h2>4. Governing Law</h2>
+            <p>These Terms are governed by the laws of the jurisdiction in which the website operator resides.</p>
+
+            <div class="disclaimer-section">
+                <h2>5. Disclaimer of Warranties</h2>
+                <p>THE SERVICE IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND. WE ARE NOT LIABLE FOR DATA LOSS, DAMAGES, OR SERVICE INTERRUPTIONS. YOU USE THIS TOOL ENTIRELY AT YOUR OWN RISK.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

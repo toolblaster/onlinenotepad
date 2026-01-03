@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Online Notepad</title>
+    <meta name="robots" content="noindex, follow">
+    <link rel="icon" type="image/png" href="../favicon/favicon-96x96.png" sizes="96x96" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../js-css/style.css">
+    <style>
+        /* Local overrides for legal pages to ensure density and readability */
+        .legal-wrapper { max-width: 800px; margin: 0 auto; padding: 2rem; }
+        .legal-content h1 { font-size: 1.5rem; color: var(--primary-color); margin-bottom: 0.5rem; }
+        .legal-content h2 { font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-color); border-bottom: 1px solid var(--border-color); padding-bottom: 0.25rem; }
+        .legal-content p, .legal-content li { font-size: 0.85rem; line-height: 1.5; color: var(--text-color); opacity: 0.9; margin-bottom: 0.8rem; }
+        .legal-content ul { padding-left: 1.2rem; }
+        .back-link { display: inline-block; margin-bottom: 1rem; font-size: 0.8rem; color: var(--secondary-color); text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        .last-updated { font-size: 0.75rem; color: #888; margin-bottom: 2rem; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="legal-wrapper">
+        <!-- Updated to use root URL path -->
+        <a href="../" class="back-link">&larr; Back to Editor</a>
+        
+        <div class="legal-content">
+            <h1>Privacy Policy</h1>
+            <p class="last-updated">Last Updated: January 3, 2026</p>
+
+            <p><strong>At Online Notepad, privacy is our core feature.</strong> Unlike traditional cloud services, we operate on a "Client-Side First" architecture. This means your notes, edits, and content are processed and stored entirely within your own web browser's Local Storage.</p>
+
+            <h2>1. Data Collection & Storage</h2>
+            <p>We do not operate a backend database to store your personal notes. When you type in Online Notepad:</p>
+            <ul>
+                <li><strong>Content:</strong> Your text is saved to your device's <code>localStorage</code>. It never leaves your device unless you explicitly choose to share it via a generated link.</li>
+                <li><strong>Transmission:</strong> We do not transmit your keystrokes to any server.</li>
+                <li><strong>Files:</strong> Files you upload are processed instantly in the browser memory and are not uploaded to a remote server.</li>
+            </ul>
+
+            <h2>2. Cookies & Third-Party Technologies</h2>
+            <p>While the notepad functionality is cookie-free, we may use standard third-party services to maintain the site:</p>
+            <ul>
+                <li><strong>Analytics:</strong> We may use aggregated, anonymized tools (like Google Analytics) to understand traffic sources. These do not access your note content.</li>
+                <li><strong>Advertising:</strong> Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to your website or other websites. Google's use of advertising cookies enables it and its partners to serve ads to your users based on their visit to your sites and/or other sites on the Internet.</li>
+                <li><strong>Opt-Out:</strong> Users may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="nofollow">Ads Settings</a>.</li>
+            </ul>
+
+            <h2>3. Note Sharing & Links</h2>
+            <p>If you use the "Share Note" feature, the application encodes your text into a URL parameter. This URL contains the data itself; we do not store a copy on our servers. Anyone with access to that specific link can view the content encoded within it.</p>
+
+            <h2>4. Data Deletion</h2>
+            <p>Since data is stored on your device, you have full control. Clearing your browser's cache or "Local Storage" will permanently delete your notes. We cannot recover lost data as we do not hold a backup.</p>
+
+            <h2>5. Changes to This Policy</h2>
+            <p>We may update this policy to comply with legal or operational requirements. Continued use of the tool constitutes acceptance of these changes.</p>
+
+            <h2>6. Contact</h2>
+            <p>For privacy concerns, please reach out via our contact page.</p>
+        </div>
+    </div>
+</body>
+</html>

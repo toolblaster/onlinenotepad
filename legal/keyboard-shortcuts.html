@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyboard Shortcuts - Online Notepad</title>
+    <meta name="robots" content="noindex, follow">
+    <meta name="description" content="List of keyboard shortcuts available in the Online Notepad editor.">
+    <!-- Updated path: ../favicon/ -->
+    <link rel="icon" type="image/png" href="../favicon/favicon-96x96.png" sizes="96x96" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Updated path: ../js-css/ -->
+    <link rel="stylesheet" href="../js-css/style.css">
+    <style>
+        /* Compact Vertical Layout (Consistent with Terms/Privacy) */
+        body { background-color: var(--bg-color); color: var(--text-color); }
+        
+        .legal-wrapper { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 1rem 1.5rem; 
+        }
+        
+        .back-link { 
+            display: inline-block; 
+            margin-bottom: 0.5rem; 
+            font-size: 0.75rem; 
+            color: var(--secondary-color); 
+            text-decoration: none; 
+            font-weight: 600;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        .legal-content h1 { 
+            font-size: 1.2rem; 
+            color: var(--primary-color); 
+            margin-bottom: 1rem; 
+        }
+
+        /* Mac Note Box */
+        .mac-note {
+            background-color: rgba(33, 150, 243, 0.08); /* Very light blue */
+            border: 1px solid rgba(33, 150, 243, 0.3);
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .mac-note i { color: var(--secondary-color); font-size: 1.2rem; }
+        .mac-note strong { color: var(--secondary-color); }
+
+        .shortcut-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 0.8rem;
+        }
+
+        .shortcut-item {
+            background-color: var(--editor-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.6rem 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.8rem;
+        }
+
+        .kbd-group {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        kbd {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+            color: #333;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            min-width: 20px;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .action-name {
+            font-weight: 500;
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+
+        /* Dark Mode overrides for keys */
+        body.dark-mode kbd {
+            background-color: #333;
+            border-color: #555;
+            color: #eee;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.5);
+        }
+        
+        body.dark-mode .shortcut-item {
+            border-color: #444;
+        }
+
+        body.dark-mode .mac-note {
+            background-color: rgba(33, 150, 243, 0.15);
+            border-color: rgba(33, 150, 243, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="legal-wrapper">
+        <a href="../" class="back-link">&larr; Back to Editor</a>
+        
+        <div class="legal-content">
+            <h1>Keyboard Shortcuts</h1>
+            
+            <div class="mac-note">
+                <i class="fab fa-apple"></i>
+                <span><strong>Mac Users:</strong> Please use the <kbd>Command ⌘</kbd> key wherever <kbd>Ctrl</kbd> is shown below.</span>
+            </div>
+            
+            <div class="shortcut-grid">
+                <!-- File Operations -->
+                <div class="shortcut-item">
+                    <span class="action-name">Save Note</span>
+                    <div class="kbd-group"><kbd>Ctrl</kbd> + <kbd>S</kbd></div>
+                </div>
+                <div class="shortcut-item">
+                    <span class="action-name">Print</span>
+                    <div class="kbd-group"><kbd>Ctrl</kbd> + <kbd>P</kbd></div>
+                </div>
+                
+                <!-- Editing -->
+                <div class="shortcut-item">
+                    <span class="action-name">Select All</span>
+                    <div class="kbd-group"><kbd>Ctrl</kbd> + <kbd>A</kbd></div>
+                </div>
+                <div class="shortcut-item">
+                    <span class="action-name">Undo</span>
+                    <div class="kbd-group"><kbd>Ctrl</kbd> + <kbd>Z</kbd></div>
+                </div>
+                <div class="shortcut-item">
+                    <span class="action-name">Redo</span>
+                    <div class="kbd-group"><kbd>Ctrl</kbd> + <kbd>Y</kbd></div>
+                </div>
+                <div class="shortcut-item">
+                    <span class="action-name">Redo (Alt)</span>
+                    <div class="kbd-group"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd></div>
+                </div>
+                <div class="shortcut-item">
+                    <span class="action-name">Cut</span>
+                    <div class="kbd-group"><kbd>Ctrl</kbd> + <kbd>X</kbd></div>
+                </div>
+                <div class="shortcut-item">
+                    <span class="action-name">Copy</span>
+                    <div class="kbd-group"><kbd>Ctrl</kbd> + <kbd>C</kbd></div>
+                </div>
+                <div class="shortcut-item">
+                    <span class="action-name">Paste</span>
+                    <div class="kbd-group"><kbd>Ctrl</kbd> + <kbd>V</kbd></div>
+                </div>
+
+                <!-- Formatting -->
+                <div class="shortcut-item">
+                    <span class="action-name">Bold</span>
+                    <div class="kbd-group"><kbd>Ctrl</kbd> + <kbd>B</kbd></div>
+                </div>
+                <div class="shortcut-item">
+                    <span class="action-name">Italic</span>
+                    <div class="kbd-group"><kbd>Ctrl</kbd> + <kbd>I</kbd></div>
+                </div>
+                <div class="shortcut-item">
+                    <span class="action-name">Underline</span>
+                    <div class="kbd-group"><kbd>Ctrl</kbd> + <kbd>U</kbd></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Check for dark mode preference
+        const isDark = localStorage.getItem('notepad_darkMode') === 'true';
+        if (isDark) {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
+</body>
+</html>

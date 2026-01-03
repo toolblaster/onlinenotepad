@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Online Notepad</title>
+    <meta name="robots" content="noindex, follow">
+    <meta name="description" content="Contact the Online Notepad team for support, feedback, bug reports, or inquiries.">
+    <!-- Updated path: ../favicon/ -->
+    <link rel="icon" type="image/png" href="../favicon/favicon-96x96.png" sizes="96x96" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Updated path: ../js-css/ -->
+    <link rel="stylesheet" href="../js-css/style.css">
+    <style>
+        /* Ensures body matches other pages exactly */
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; }
+
+        /* Compact Local Overrides */
+        .legal-wrapper { max-width: 600px; margin: 0 auto; padding: 2rem; display: flex; flex-direction: column; min-height: 100vh; justify-content: center; }
+        .legal-content { text-align: center; }
+        .legal-content h1 { font-size: 1.8rem; color: var(--primary-color); margin-bottom: 0.5rem; }
+        .legal-content p { font-size: 0.95rem; color: var(--text-color); margin-bottom: 2rem; opacity: 0.8; }
+        
+        .contact-card {
+            background-color: var(--editor-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+            margin-bottom: 2rem;
+        }
+        .contact-card:hover { transform: translateY(-2px); }
+        
+        /* Container for Email + Copy Button */
+        .email-action-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .email-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem; /* Compact Size */
+            font-weight: 600;
+            color: var(--secondary-color);
+            text-decoration: none;
+            padding: 0.6rem 1.2rem; /* Compact Padding */
+            
+            /* Explicit white background for clean look */
+            background-color: #ffffff; 
+            border: 1px solid var(--border-color);
+            
+            border-radius: 50px;
+            transition: all 0.2s ease;
+        }
+        .email-link:hover {
+            background-color: var(--hover-bg); 
+            color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+
+        /* Copy Button Styles */
+        .copy-btn {
+            width: 38px; /* Compact Size */
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            
+            /* Explicit white background */
+            background-color: #ffffff;
+            
+            color: var(--text-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+        .copy-btn:hover {
+            background-color: var(--hover-bg);
+            color: var(--primary-color);
+            transform: scale(1.05);
+        }
+        .copy-btn.copied {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .bug-report-info {
+            font-size: 0.85rem;
+            color: var(--text-color);
+            opacity: 0.7;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .bug-report-info strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--danger-color);
+        }
+        
+        .back-link { display: inline-block; margin-top: 1rem; font-size: 0.85rem; color: var(--text-color); text-decoration: none; opacity: 0.6; }
+        .back-link:hover { opacity: 1; text-decoration: underline; }
+
+        /* Dark Mode adjustments */
+        body.dark-mode .email-link { background-color: transparent; border-color: #444; }
+        body.dark-mode .email-link:hover { background-color: #333; border-color: var(--secondary-color); }
+        body.dark-mode .copy-btn { background-color: transparent; border-color: #444; }
+        body.dark-mode .copy-btn:hover { background-color: #333; }
+    </style>
+</head>
+<body>
+    <div class="legal-wrapper">
+        <div class="legal-content">
+            <h1>Contact Us</h1>
+            <p>Have questions, suggestions, or need support? We're here to help.</p>
+
+            <div class="contact-card">
+                <div class="email-action-row">
+                    <a href="mailto:hello@tooolblaster.com" class="email-link">
+                        <i class="fas fa-envelope"></i> <span id="emailText">hello@tooolblaster.com</span>
+                    </a>
+                    <button class="copy-btn" id="copyBtn" aria-label="Copy Email Address" title="Copy to Clipboard">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+
+                <div class="bug-report-info">
+                    <strong><i class="fas fa-bug"></i> Found a Bug or Issue?</strong>
+                    <p style="margin-bottom: 0;">Please include your browser version and device details in your email so we can fix it faster!</p>
+                </div>
+            </div>
+
+            <!-- Updated path: ../ for clean root URL -->
+            <a href="../" class="back-link">&larr; Return to Notepad</a>
+        </div>
+    </div>
+
+    <script>
+        // Check for dark mode preference from main site
+        const isDark = localStorage.getItem('notepad_darkMode') === 'true';
+        if (isDark) {
+            document.body.classList.add('dark-mode');
+        }
+
+        // Copy functionality
+        const copyBtn = document.getElementById('copyBtn');
+        const emailText = document.getElementById('emailText').innerText;
+
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(emailText).then(() => {
+                // Success feedback
+                copyBtn.classList.add('copied');
+                copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+                
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                // Fallback for older browsers
+                const textArea = document.createElement("textarea");
+                textArea.value = emailText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    copyBtn.classList.add('copied');
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+                    setTimeout(() => {
+                        copyBtn.classList.remove('copied');
+                        copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                    }, 2000);
+                } catch (err) {
+                    console.error('Fallback copy failed', err);
+                }
+                document.body.removeChild(textArea);
+            });
+        });
+    </script>
+</body>
+</html>
