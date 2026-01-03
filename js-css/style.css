@@ -976,6 +976,27 @@ body.view-locked .container {
     font-style: italic;
 }
 
+/* Download Options Styles */
+.download-options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.download-option-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.download-option-btn i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
 /* "Full Width" Mode (was Fullscreen) */
 body.full-width .notes-sidebar {
     display: none;
